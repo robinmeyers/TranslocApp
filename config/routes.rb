@@ -1,5 +1,5 @@
 TranslocApp::Application.routes.draw do
-  get "researchers/new"
+  resources :researchers
   root  'static_pages#home'
   match '/signup',  to: 'researchers#new',      via: 'get'
   match '/help',    to: 'static_pages#help',    via: 'get'
