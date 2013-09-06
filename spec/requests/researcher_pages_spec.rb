@@ -29,6 +29,12 @@ describe "Researcher pages" do
       it "should not create a researcher" do
         expect { click_button submit }.not_to change(Researcher, :count)
       end
+      describe "after submission" do
+        before { click_button submit }
+
+        it { should have_title('Sign up') }
+        it { should have_content('error') }
+      end
     end
 
     describe "with valid information" do
@@ -41,6 +47,14 @@ describe "Researcher pages" do
 
       it "should create a researcher" do
         expect { click_button submit }.to change(Researcher, :count).by(1)
+      end
+
+       describe "after saving the researcher" do
+        before { click_button submit }
+        let(:researcher) { Researcher.find_by(email: 'user@example.com') }
+
+        it { should have_title(researcher.name) }
+        it { should have_selector('div.alert.alert-success', text: 'Welcome') }
       end
     end
   end
