@@ -10,6 +10,7 @@ class Researcher < ActiveRecord::Base
 
   has_secure_password
   validates :password, length: { minimum: 6 }
+  validates :password_confirmation, presence: true
 
   def Researcher.new_remember_token
     SecureRandom.urlsafe_base64

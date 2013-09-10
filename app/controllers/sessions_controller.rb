@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
     researcher = Researcher.find_by(email: params[:session][:email].downcase)
     if researcher && researcher.authenticate(params[:session][:password])
       sign_in researcher
-      redirect_to researcher
+      redirect_back_or researcher
     else
       flash.now[:error] = 'Invalid email/password combination' # Not quite right!
       render 'new'

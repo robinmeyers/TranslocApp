@@ -38,8 +38,62 @@ describe "Authentication" do
 
       it { should have_title(researcher.name) }
       it { should have_link('Profile',     href: researcher_path(researcher)) }
+      it { should have_link('Settings',    href: edit_researcher_path(researcher)) }
       it { should have_link('Sign out',    href: signout_path) }
       it { should_not have_link('Sign in', href: signin_path) }
+    end
+  end
+
+  describe "authorization" do
+
+    describe "for non-signed-in researchers" do
+      let(:researcher) { FactoryGirl.create(:researcher) }
+
+
+      describe "when attempting to visit a protected page" do
+        before do
+          visit edit_researcher_path(researcher)
+          fill_in "Email",    with: researcher.email
+          fill_in "Password", with: researcher.password
+          click_button "Sign in"
+        end
+
+        describe "after signing in" do
+
+          it "should render the desired protected page" do
+            expect(page).to have_title('Edit researcher')
+          end
+        end
+      end
+
+      describe "in the Researchers controller" do
+
+        describe "visiting the edit page" do
+          before { visit edit_researcher_path(researcher) }
+          it { should have_title('Sign in') }
+        end
+
+        describe "submitting to the update action" do
+          before { patch researcher_path(researcher) }
+          specify { expect(response).to redirect_to(signin_path) }
+        end
+      end
+    end
+    describe "as wrong user" do
+      let(:researcher) { FactoryGirl.create(:researcher) }
+      let(:wrong_researcher) { FactoryGirl.create(:researcher, email: "wrong@example.com") }
+      before { sign_in researcher, no_capybara: true }
+
+      describe "submitting a GET request to the Researchers#edit action" do
+        before { get edit_researcher_path(wrong_researcher) }
+        specify { expect(response.body).not_to match(full_title('Edit researcher')) }
+        specify { expect(response).to redirect_to(root_url) }
+      end
+
+      describe "submitting a PATCH request to the Researchers#update action" do
+        before { patch researcher_path(wrong_researcher) }
+        specify { expect(response).to redirect_to(root_url) }
+      end
     end
   end
 end
