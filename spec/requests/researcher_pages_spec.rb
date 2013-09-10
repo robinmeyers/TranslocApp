@@ -49,13 +49,19 @@ describe "Researcher pages" do
         expect { click_button submit }.to change(Researcher, :count).by(1)
       end
 
-       describe "after saving the researcher" do
+      describe "after saving the researcher" do
         before { click_button submit }
         let(:researcher) { Researcher.find_by(email: 'user@example.com') }
-
+        it { should have_link('Sign out') }
         it { should have_title(researcher.name) }
         it { should have_selector('div.alert.alert-success', text: 'Welcome') }
+
+        describe "followed by signout" do
+          before { click_link "Sign out" }
+          it { should have_link('Sign in') }
+        end
       end
+      
     end
   end
 end

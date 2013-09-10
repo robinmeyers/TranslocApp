@@ -6,6 +6,7 @@ class ResearchersController < ApplicationController
   def create
     @researcher = Researcher.new(researcher_params)
     if @researcher.save
+      sign_in @researcher
       flash[:success] = "Welcome to the Transloc App!"
       redirect_to @researcher
     else

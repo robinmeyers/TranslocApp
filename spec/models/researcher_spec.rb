@@ -14,6 +14,7 @@ describe Researcher do
   it { should respond_to(:password_digest)}
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
+  it { should respond_to(:remember_token) }
   it { should respond_to(:authenticate) }
 
   it { should be_valid }
@@ -106,6 +107,11 @@ describe Researcher do
       it { should_not eq researcher_for_invalid_password }
       specify { expect(researcher_for_invalid_password).to be_false }
     end
+  end
+
+  describe "remember token" do
+    before { @researcher.save }
+    its(:remember_token) { should_not be_blank }
   end
 
 end
