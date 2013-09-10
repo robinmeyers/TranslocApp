@@ -1,0 +1,8 @@
+<li>
+  <%= gravatar_for researcher, size: 52 %>
+  <%= link_to researcher.name, researcher %>
+   <% if current_researcher.admin? && !current_researcher?(researcher) %>
+    | <%= link_to "delete", researcher, method: :delete,
+                                  data: { confirm: "You sure?" } %>
+  <% end %>
+</li>

@@ -1,10 +1,15 @@
 class ResearchersController < ApplicationController
 
-  before_action :signed_in_researcher, only: [:edit, :update]
+  before_action :signed_in_researcher, only: [:index, :edit, :update, :destroy]
   before_action :correct_researcher,   only: [:edit, :update]
+  before_action :admin_researcher,     only: :destroy
 
   def new
     @researcher = Researcher.new
+  end
+
+  def index
+    @researchers = Researcher.paginate(page: params[:page])
   end
 
   def create
@@ -35,6 +40,12 @@ class ResearchersController < ApplicationController
     end
   end
 
+  def destroy
+    Researcher.find(params[:id]).destroy
+    flash[:success] = "Researcher destroyed."
+    redirect_to researchers_url
+  end
+
   private
 
     def researcher_params
@@ -52,6 +63,10 @@ class ResearchersController < ApplicationController
     def correct_researcher
       @researcher = Researcher.find(params[:id])
       redirect_to(root_url) unless current_researcher?(@researcher)
+    end
+
+    def admin_researcher
+      redirect_to(root_url) unless current_researcher.admin?
     end
 
 end

@@ -4,6 +4,52 @@ describe "Researcher pages" do
 
   subject { page }
 
+  describe "index" do
+    let(:researcher) { FactoryGirl.create(:researcher) }
+    before(:each) do
+      sign_in researcher
+      visit researchers_path
+    end
+
+    it { should have_title('All researchers') }
+    it { should have_content('All researchers') }
+
+    describe "pagination" do
+      before(:all) { 30.times { FactoryGirl.create(:researcher) } }
+      after(:all) { Researcher.delete_all }
+
+      it { should have_selector('div.pagination') }
+
+      it "should list each researcher" do
+        Researcher.paginate(page: 1).each do |researcher|
+          expect(page).to have_selector('li', text: researcher.name)
+        end
+      end
+    end
+
+    describe "delete links" do
+
+      it { should_not have_link('delete') }
+
+      describe "as an admin user" do
+        let(:admin) { FactoryGirl.create(:admin) }
+        before do
+          sign_in admin
+          visit researchers_path
+        end
+
+        it { should have_link('delete', href: researcher_path(Researcher.first)) }
+        it "should be able to delete another user" do
+          expect do
+            click_link('delete', match: :first)
+          end.to change(Researcher, :count).by(-1)
+        end
+        it { should_not have_link('delete', href: researcher_path(admin)) }
+      end
+    end
+  end
+
+
   describe "signup page" do
     before { visit signup_path }
 
@@ -39,10 +85,10 @@ describe "Researcher pages" do
 
     describe "with valid information" do
       before do
-        fill_in "Name",         with: "Example User"
-        fill_in "Email",        with: "user@example.com"
-        fill_in "Password",     with: "foobar"
-        fill_in "Confirmation", with: "foobar"
+        fill_in "Name",             with: "Example User"
+        fill_in "Email",            with: "user@example.com"
+        fill_in "Password",         with: "foobar"
+        fill_in "Confirm Password", with: "foobar"
       end
 
       it "should create a researcher" do
@@ -100,6 +146,18 @@ describe "Researcher pages" do
       it { should have_link('Sign out', href: signout_path) }
       specify { expect(researcher.reload.name).to  eq new_name }
       specify { expect(researcher.reload.email).to eq new_email }
+    end
+
+    describe "forbidden attributes" do
+      let(:params) do
+        { researcher: { admin: true, password: researcher.password,
+                  password_confirmation: researcher.password } }
+      end
+      before do
+        sign_in researcher, no_capybara: true
+        patch researcher_path(researcher), params
+      end
+      specify { expect(researcher.reload).not_to be_admin }
     end
   end
 end
