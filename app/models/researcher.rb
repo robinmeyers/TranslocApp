@@ -12,6 +12,8 @@ class Researcher < ActiveRecord::Base
   validates :password, length: { minimum: 6 }
   validates :password_confirmation, presence: true
 
+  attr_accessor :labkey
+
   def Researcher.new_remember_token
     SecureRandom.urlsafe_base64
   end
@@ -25,5 +27,6 @@ class Researcher < ActiveRecord::Base
     def create_remember_token
       self.remember_token = Researcher.encrypt(Researcher.new_remember_token)
     end
+
 
 end

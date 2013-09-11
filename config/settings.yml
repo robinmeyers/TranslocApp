@@ -1,0 +1,5 @@
+labkey: <% if File.exist?(Rails.root.join('.labkey')) %>
+          <%= File.open(Rails.root.join('.labkey')).first.chomp %>
+        <% else %>
+          <%= nil %>
+        <% end %>

@@ -14,14 +14,21 @@ class ResearchersController < ApplicationController
 
   def create
     @researcher = Researcher.new(researcher_params)
-    if @researcher.save
-      sign_in @researcher
-      flash[:success] = "Welcome to the Transloc App!"
-      redirect_to @researcher
+    if Settings.labkey.nil? || Digest::SHA1.hexdigest(@researcher.labkey.to_s) == Settings.labkey
+      if @researcher.save
+        sign_in @researcher
+        flash[:success] = "Welcome to the Transloc App!"
+        redirect_to @researcher
+      else
+        render 'new'
+      end
     else
+      flash.now[:error] = "Lab Key was not entered correctly"
       render 'new'
     end
   end
+
+
 
   def show
     @researcher = Researcher.find(params[:id])
@@ -50,7 +57,7 @@ class ResearchersController < ApplicationController
 
     def researcher_params
       params.require(:researcher).permit(:name, :email, :password,
-                                   :password_confirmation)
+                                   :password_confirmation, :labkey)
     end
 
     def signed_in_researcher
@@ -68,6 +75,10 @@ class ResearchersController < ApplicationController
     def admin_researcher
       redirect_to(root_url) unless current_researcher.admin?
     end
+
+
+
+    
 
 end
 

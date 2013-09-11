@@ -51,10 +51,25 @@ describe "Researcher pages" do
 
 
   describe "signup page" do
-    before { visit signup_path }
+    describe "without labkey" do
+      before do
+        Settings.labkey = nil
+        visit signup_path
+      end
 
-    it { should have_content('Sign up') }
-    it { should have_title(full_title('Sign up')) }
+      it { should have_content('Sign up') }
+      it { should have_title(full_title('Sign up')) }
+      it { should_not have_field('Lab Key') }
+    end
+
+    describe "with labkey" do
+      before do
+        Settings.labkey = Digest::SHA1.hexdigest("barfoo")
+        visit signup_path
+      end
+
+      it { should have_field('Lab Key') }
+    end
   end
 
   describe "profile page" do
@@ -67,48 +82,121 @@ describe "Researcher pages" do
 
   describe "signup" do
 
-    before { visit signup_path }
-
     let(:submit) { "Create my account" }
 
-    describe "with invalid information" do
-      it "should not create a researcher" do
-        expect { click_button submit }.not_to change(Researcher, :count)
-      end
-      describe "after submission" do
-        before { click_button submit }
+    describe "without labkey" do
 
-        it { should have_title('Sign up') }
-        it { should have_content('error') }
-      end
-    end
-
-    describe "with valid information" do
       before do
-        fill_in "Name",             with: "Example User"
-        fill_in "Email",            with: "user@example.com"
-        fill_in "Password",         with: "foobar"
-        fill_in "Confirm Password", with: "foobar"
+        Settings.labkey = nil
+        visit signup_path
       end
 
-      it "should create a researcher" do
-        expect { click_button submit }.to change(Researcher, :count).by(1)
-      end
+      describe "with invalid information" do
 
-      describe "after saving the researcher" do
-        before { click_button submit }
-        let(:researcher) { Researcher.find_by(email: 'user@example.com') }
-        it { should have_link('Sign out') }
-        it { should have_title(researcher.name) }
-        it { should have_selector('div.alert.alert-success', text: 'Welcome') }
+        it "should not create a researcher" do
+          expect { click_button submit }.not_to change(Researcher, :count)
+        end
+        describe "after submission" do
+          before { click_button submit }
 
-        describe "followed by signout" do
-          before { click_link "Sign out" }
-          it { should have_link('Sign in') }
+          it { should have_title('Sign up') }
+          it { should have_content('error') }
         end
       end
-      
+
+      describe "with valid information" do
+        before do
+          fill_in "Name",             with: "Example User"
+          fill_in "Email",            with: "user@example.com"
+          fill_in "Password",         with: "foobar"
+          fill_in "Confirm Password", with: "foobar"
+        end
+
+        it "should create a researcher" do
+          expect { click_button submit }.to change(Researcher, :count).by(1)
+        end
+
+        describe "after saving the researcher" do
+          before { click_button submit }
+          let(:researcher) { Researcher.find_by(email: 'user@example.com') }
+          it { should have_link('Sign out') }
+          it { should have_title(researcher.name) }
+          it { should have_selector('div.alert.alert-success', text: 'Welcome') }
+
+          describe "followed by signout" do
+            before { click_link "Sign out" }
+            it { should have_link('Sign in') }
+          end
+        end
+      end
     end
+
+    describe "with a labkey" do
+      before do
+        Settings.labkey = Digest::SHA1.hexdigest("barfoo")
+        visit signup_path
+      end
+
+      describe "with invalid information" do
+        before { fill_in "Lab Key", with: "barfoo" }
+
+        it "should not create a researcher" do
+          expect { click_button submit }.not_to change(Researcher, :count)
+        end
+        describe "after submission" do
+          before { click_button submit }
+
+          it { should have_title('Sign up') }
+          it { should have_content('error') }
+        end
+      end
+
+      describe "with valid information except for labkey" do
+        before do
+          fill_in "Name",             with: "Example User"
+          fill_in "Email",            with: "user@example.com"
+          fill_in "Password",         with: "foobar"
+          fill_in "Confirm Password", with: "foobar"
+        end
+        it "should not create a researcher" do
+          expect { click_button submit }.not_to change(Researcher, :count)
+        end
+        describe "after submission" do
+          before { click_button submit }
+
+          it { should have_title('Sign up') }
+          it { should have_selector('div.alert.alert-error', text: 'Lab Key') }
+        end
+      end
+
+      describe "with valid information" do
+        before do
+          fill_in "Name",             with: "Example User"
+          fill_in "Email",            with: "user@example.com"
+          fill_in "Password",         with: "foobar"
+          fill_in "Confirm Password", with: "foobar"
+          fill_in "Lab Key",          with: "barfoo"
+        end
+
+        it "should create a researcher" do
+          expect { click_button submit }.to change(Researcher, :count).by(1)
+        end
+
+        describe "after saving the researcher" do
+          before { click_button submit }
+          let(:researcher) { Researcher.find_by(email: 'user@example.com') }
+          it { should have_link('Sign out') }
+          it { should have_title(researcher.name) }
+          it { should have_selector('div.alert.alert-success', text: 'Welcome') }
+
+          describe "followed by signout" do
+            before { click_link "Sign out" }
+            it { should have_link('Sign in') }
+          end
+        end
+      end
+    end
+
   end
 
   describe "edit" do
