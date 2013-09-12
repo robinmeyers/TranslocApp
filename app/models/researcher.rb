@@ -14,6 +14,8 @@ class Researcher < ActiveRecord::Base
 
   attr_accessor :labkey
 
+  self.per_page = 10
+
   def Researcher.new_remember_token
     SecureRandom.urlsafe_base64
   end

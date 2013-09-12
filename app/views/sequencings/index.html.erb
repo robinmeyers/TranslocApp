@@ -1,0 +1,23 @@
+<% provide(:title, 'Sequencings') %>
+<h1>Sequencing Runs</h1>
+<h3>
+<%= link_to "Create New Run", new_sequencing_path %>
+</h3>
+
+<% if @uncompleted_sequencings.any? %>
+  <% @uncompleted_sequencings.each do |s| %>
+    <h3>Uncompleted Runs</h3>
+    <ul class="sequencings">
+      <%= render 'sequencing', sequencing: s %>
+    </ul>
+  <% end %>
+<% end %>
+
+
+
+<h3>Completed Runs</h3>
+<ul class="sequencings">
+  <%= render @completed_sequencings %>
+</ul>
+
+<%= will_paginate @completed_sequencings %>

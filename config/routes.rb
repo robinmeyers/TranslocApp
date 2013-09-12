@@ -1,4 +1,5 @@
 TranslocApp::Application.routes.draw do
+  resources :sequencings
   resources :researchers
   resources :sessions, only: [:new, :create, :destroy]
   root  'static_pages#home'

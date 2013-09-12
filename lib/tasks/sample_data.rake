@@ -10,7 +10,7 @@ namespace :db do
                  email: "example@railstutorial.org",
                  password: "foobar",
                  password_confirmation: "foobar")
-    99.times do |n|
+    25.times do |n|
       name  = Faker::Name.name
       email = "example-#{n+1}@railstutorial.org"
       password  = "password"
@@ -18,6 +18,12 @@ namespace :db do
                    email: email,
                    password: password,
                    password_confirmation: password)
+  
+    end
+    (1..50).each do |n|
+      run = "Alt%03d" % n
+      completed_on = (50-n).weeks.ago
+      Sequencing.create!(run: run, completed_on: completed_on)
     end
   end
 end

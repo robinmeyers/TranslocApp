@@ -1,6 +1,6 @@
 class ResearchersController < ApplicationController
 
-  before_action :signed_in_researcher, only: [:index, :edit, :update, :destroy]
+  before_action :signed_in_researcher, only: [:show, :index, :edit, :update, :destroy]
   before_action :correct_researcher,   only: [:edit, :update]
   before_action :admin_researcher,     only: :destroy
 
@@ -60,12 +60,7 @@ class ResearchersController < ApplicationController
                                    :password_confirmation, :labkey)
     end
 
-    def signed_in_researcher
-      unless signed_in?
-        store_location
-        redirect_to signin_url, notice: "Please sign in."
-      end
-    end
+    
 
     def correct_researcher
       @researcher = Researcher.find(params[:id])

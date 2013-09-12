@@ -1,0 +1,15 @@
+<% provide(:title, @sequencing.run) %>
+<div class="row">
+  <aside class="span4">
+    <section>
+      <h1>
+        <%= @sequencing.run %>
+      </h1>
+      <% if @sequencing.completed_on.nil? %>
+        <%= link_to "Uncompleted", edit_sequencing_path(@sequencing) %>
+      <% else %>
+        <%= render 'sequencing_date', sequencing: @sequencing %>
+      <% end %>
+    </section>
+  </aside>
+</div>

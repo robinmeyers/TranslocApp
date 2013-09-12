@@ -6,6 +6,13 @@ module SessionsHelper
     self.current_researcher = researcher
   end
 
+  def signed_in_researcher
+    unless signed_in?
+      store_location
+      redirect_to signin_url, notice: "Please sign in."
+    end
+  end
+
   def current_researcher=(researcher)
     @current_researcher = researcher
   end

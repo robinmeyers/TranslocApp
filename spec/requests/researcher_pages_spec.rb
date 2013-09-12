@@ -74,7 +74,10 @@ describe "Researcher pages" do
 
   describe "profile page" do
     let(:researcher) { FactoryGirl.create(:researcher) }
-    before { visit researcher_path(researcher) }
+    before do
+      sign_in researcher
+      visit researcher_path(researcher)
+    end
 
     it { should have_content(researcher.name) }
     it { should have_title(researcher.name) }

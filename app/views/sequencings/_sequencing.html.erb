@@ -1,0 +1,8 @@
+<li>
+  <%= link_to sequencing.run, sequencing %> - 
+  <% if sequencing.completed_on.nil? %>
+    <%= link_to "Uncompleted", edit_sequencing_path(sequencing) %>
+  <% else %>
+    <%= render 'sequencing_date', sequencing: sequencing %>
+  <% end %>  
+</li>
