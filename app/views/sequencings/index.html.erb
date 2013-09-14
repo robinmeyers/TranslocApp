@@ -4,9 +4,10 @@
 <%= link_to "Create New Run", new_sequencing_path %>
 </h3>
 
+
 <% if @uncompleted_sequencings.any? %>
+  <h3>Uncompleted Runs</h3>
   <% @uncompleted_sequencings.each do |s| %>
-    <h3>Uncompleted Runs</h3>
     <ul class="sequencings">
       <%= render 'sequencing', sequencing: s %>
     </ul>

@@ -3,6 +3,7 @@ class SequencingsController < ApplicationController
   before_action :signed_in_researcher
       
   def new
+    @sequencing = Sequencing.new
   end
 
   def index
@@ -11,6 +12,15 @@ class SequencingsController < ApplicationController
   end
 
   def create
+    @sequencing = Sequencing.new(run: params[:sequencing][:run])
+    if @sequencing.save
+      flash[:success] = @sequencing.run + " successfully created"
+      redirect_to @sequencing
+    else
+      flash.now[:error] = "Could not create new sequencing run"
+      render 'new'
+    end
+
   end
 
   def show
@@ -22,4 +32,5 @@ class SequencingsController < ApplicationController
 
   def destroy
   end
+
 end

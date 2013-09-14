@@ -1,2 +1,12 @@
-<h1>Sequencings#new</h1>
-<p>Find me in app/views/sequencings/new.html.erb</p>
+<h1>Create a New Sequencing Run</h1>
+<div class="row">
+  <div class="span6 offset3">
+    <%= form_for(@sequencing) do |f| %>
+
+    <%= f.label :run, "Run Name" %>
+    <%= f.text_field :run %>
+
+    <%= f.submit "Submit Run", class: "btn btn-large btn-primary" %>
+    <% end %>
+  </div>
+</div>
