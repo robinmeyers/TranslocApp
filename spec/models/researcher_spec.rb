@@ -130,8 +130,8 @@ describe Researcher do
 
     before do
       @researcher.save
-      @old_sequencing = FactoryGirl.create(:sequencing)
-      @new_sequencing = FactoryGirl.create(:sequencing)
+      @old_sequencing = FactoryGirl.create(:completed_sequencing)
+      @new_sequencing = FactoryGirl.create(:completed_sequencing)
     end
     let!(:older_experiment) do
       FactoryGirl.create(:experiment, researcher: @researcher, sequencing: @old_sequencing)
