@@ -1,5 +1,7 @@
 class Researcher < ActiveRecord::Base
 
+  has_many :experiments
+
   before_save { email.downcase! }
   before_create :create_remember_token
 
