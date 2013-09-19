@@ -1,5 +1,7 @@
 TranslocApp::Application.routes.draw do
-  resources :sequencings
+  resources :sequencings do
+    patch 'mark_as_completed', on: :member
+  end
   resources :researchers
   resources :sessions, only: [:new, :create, :destroy]
   root  'static_pages#home'

@@ -36,6 +36,17 @@ describe "Sequencing pages" do
     it { should have_content("Uncompleted") }
     it { should have_button("Mark as Completed") }
 
+    it "should mark as completed" do
+      expect { click_button "Mark as Completed" }.to change{sequencing.reload.completed_on}.from(nil).to(Date.today)
+    end
+
+    describe "after clicking completed button" do
+      before { click_button "Mark as Completed" }
+
+      it { should_not have_content("Uncompleted") }
+      it { should_not have_button("Mark as Completed") }
+    end
+
   end
 
 

@@ -7,7 +7,7 @@
       </h1>
       <% if @sequencing.completed_on.nil? %>
         <h2>Uncompleted</h2>
-        <%= form_for(@sequencing) do |f| %>
+        <%= form_for(@sequencing, url: {action: "mark_as_completed"}) do |f| %>
           <%= f.submit "Mark as Completed", class: "btn btn-primary" %>
         <% end %>
       <% else %>

@@ -30,6 +30,13 @@ class SequencingsController < ApplicationController
   def update
   end
 
+  def mark_as_completed
+    @sequencing = Sequencing.find(params[:id])
+    @sequencing.update_attributes(completed_on: Date.today)
+    flash[:success] = "Sequencing run marked as completed"
+    redirect_to @sequencing
+  end
+
   def destroy
   end
 
