@@ -6,6 +6,7 @@ describe Sequencing do
   subject { @sequencing }
 
   it { should respond_to(:run) }
+  it { should respond_to(:experiments) }
   it { should be_valid }
 
   describe "when run is not present" do
