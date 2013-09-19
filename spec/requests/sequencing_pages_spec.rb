@@ -34,7 +34,11 @@ describe "Sequencing pages" do
     it { should have_title(sequencing.run) }
     it { should have_content(sequencing.run) }
     it { should have_content("Uncompleted") }
+    it { should have_button("Mark as Completed") }
+
   end
+
+
 
 end
 

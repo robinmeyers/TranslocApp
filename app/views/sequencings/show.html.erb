@@ -6,9 +6,14 @@
         <%= @sequencing.run %>
       </h1>
       <% if @sequencing.completed_on.nil? %>
-        <%= link_to "Uncompleted", edit_sequencing_path(@sequencing) %>
+        <h2>Uncompleted</h2>
+        <%= form_for(@sequencing) do |f| %>
+          <%= f.submit "Mark as Completed", class: "btn btn-primary" %>
+        <% end %>
       <% else %>
-        <%= render 'sequencing_date', sequencing: @sequencing %>
+        <h2>
+          <%= format_date(@sequencing.completed_on) %>
+        </h2>
       <% end %>
     </section>
   </aside>
