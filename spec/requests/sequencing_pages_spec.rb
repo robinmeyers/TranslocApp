@@ -2,20 +2,18 @@ require 'spec_helper'
 
 describe "Sequencing pages" do
   subject { page }
+  let(:researcher) { FactoryGirl.create(:researcher) }
+  before { sign_in researcher }
 
   describe "index page" do
 
-    let(:researcher) { FactoryGirl.create(:researcher) }
-    before do
-      sign_in researcher
-      visit sequencings_path
-    end
+    before { visit sequencings_path }
 
     it { should have_title('Sequencings') }
     it { should have_content('Sequencing Runs') }
 
     describe "pagination" do
-      before(:all) { 30.times { FactoryGirl.create(:sequencing) } }
+      before(:all) { 30.times { FactoryGirl.create(:completed_sequencing) } }
       after(:all) { Sequencing.delete_all }
 
       it { should have_selector('div.pagination') }
@@ -27,6 +25,17 @@ describe "Sequencing pages" do
       end
     end
   end
+
+
+  describe "uncompleted sequencing run page" do
+    let(:sequencing) { FactoryGirl.create(:sequencing) }
+    before { visit sequencing_path(sequencing) }
+
+    it { should have_title(sequencing.run) }
+    it { should have_content(sequencing.run) }
+    it { should have_content("Uncompleted") }
+  end
+
 end
 
     # describe "delete links" do

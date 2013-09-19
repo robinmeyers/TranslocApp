@@ -12,7 +12,10 @@ FactoryGirl.define do
 
   factory :sequencing do
     sequence(:run) { |n| "Alt%03d" % n }
-    sequence(:completed_on) { |n| n.weeks.from_now }
+
+    factory :completed_sequencing do
+      sequence(:completed_on) { |n| n.weeks.from_now }
+    end
   end
 
 end
