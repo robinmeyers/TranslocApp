@@ -12,7 +12,7 @@ class Researcher < ActiveRecord::Base
   validates :password, length: { minimum: 6 }
   validates :password_confirmation, presence: true
 
-  attr_accessor :labkey
+  attr_accessor :labkey, :adminkey
 
   self.per_page = 10
 

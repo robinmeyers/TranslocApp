@@ -5,6 +5,10 @@
   <div class="span6 offset3">
     <%= form_for(@researcher) do |f| %>
       <%= render 'fields', f: f %>
+      <% if Settings.adminkey.present? %>
+        <%= f.label :adminkey, "Admin Key" %>
+        <%= f.password_field :adminkey %>
+      <% end %>
       <%= f.submit "Save changes", class: "btn btn-large btn-primary" %>
     <% end %>
 
