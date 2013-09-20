@@ -18,12 +18,17 @@
     </section>
   </aside>
   <div class="span8">
+    <%= form_for(@experiment) do |f| %>
+      <%= render 'shared/error_messages', object: f.object %>
+      <%= f.hidden_field :sequencing_id, :value => @sequencing.id %>
+      <%= f.text_field :name, placeholder: "Name your experiment..." %>
+      <%= f.submit "Create Experiment", class: "btn btn-large btn-primary" %>
+    <% end %>
     <% if @sequencing.experiments.any? %>
       <h3>Experiments (<%= @sequencing.experiments.count %>)</h3>
       <ol class="experiments">
-        <%= render @experiments %>
+        <%= render @sequencing.experiments %>
       </ol>
-      <%= will_paginate @experiments %>
     <% end %>
   </div>
 </div>
