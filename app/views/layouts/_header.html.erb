@@ -14,11 +14,11 @@
                 Account <b class="caret"></b>
               </a>
               <ul class="dropdown-menu">
-                <li><%= link_to "Profile", current_researcher %></li>
-                <li><%= link_to "Settings", edit_researcher_path(current_researcher) %></li>
+                <li><%= link_to content_tag(:i, "", class: "icon-user") + " Profile", current_researcher %></li>
+                <li><%= link_to content_tag(:i, "", class: "icon-wrench") + " Settings", edit_researcher_path(current_researcher) %></li>
                 <li class="divider"></li>
                 <li>
-                  <%= link_to "Sign out", signout_path, method: "delete" %>
+                  <%= link_to content_tag(:i, "", class: "icon-remove-sign") + " Sign out", signout_path, method: "delete" %>
                 </li>
               </ul>
             </li>

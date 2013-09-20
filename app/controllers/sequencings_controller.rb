@@ -7,8 +7,8 @@ class SequencingsController < ApplicationController
   end
 
   def index
-    @uncompleted_sequencings = Sequencing.where(completed_on: nil)
-    @completed_sequencings = Sequencing.where.not(completed_on: nil).paginate(page: params[:page])
+    @uncompleted_sequencings = Sequencing.uncompleted
+    @completed_sequencings = Sequencing.completed.paginate(page: params[:page])
   end
 
   def create

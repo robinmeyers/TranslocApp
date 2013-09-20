@@ -3,3 +3,9 @@ labkey: <% if File.exist?(Rails.root.join('.labkey')) %>
         <% else %>
           <%= nil %>
         <% end %>
+
+adminkey: <% if File.exist?(Rails.root.join('.adminkey')) %>
+            <%= File.open(Rails.root.join('.adminkey')).first.chomp %>
+          <% else %>
+            <%= nil %>
+          <% end %>

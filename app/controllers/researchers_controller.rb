@@ -41,6 +41,14 @@ class ResearchersController < ApplicationController
   def update
     if @researcher.update_attributes(researcher_params)
       flash[:success] = "Profile updated"
+      unless Settings.adminkey.nil? || @researcher.adminkey.to_s.empty?
+        if Digest::SHA1.hexdigest(@researcher.adminkey.to_s) == Settings.adminkey
+          @researcher.update_attribute(:admin, true)
+          flash[:success] += " - You are now an admin"
+        else
+          flash[:error] = "Admin Key entered incorrectly"
+        end  
+      end
       sign_in @researcher
       redirect_to @researcher
     else
@@ -58,7 +66,7 @@ class ResearchersController < ApplicationController
 
     def researcher_params
       params.require(:researcher).permit(:name, :email, :password,
-                                   :password_confirmation, :labkey)
+                                   :password_confirmation, :labkey, :adminkey)
     end
 
     
