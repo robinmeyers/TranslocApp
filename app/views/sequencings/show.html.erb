@@ -17,4 +17,13 @@
       <% end %>
     </section>
   </aside>
+  <div class="span8">
+    <% if @sequencing.experiments.any? %>
+      <h3>Experiments (<%= @sequencing.experiments.count %>)</h3>
+      <ol class="experiments">
+        <%= render @experiments %>
+      </ol>
+      <%= will_paginate @experiments %>
+    <% end %>
+  </div>
 </div>

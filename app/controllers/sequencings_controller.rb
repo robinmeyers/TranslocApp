@@ -25,6 +25,7 @@ class SequencingsController < ApplicationController
 
   def show
     @sequencing = Sequencing.find(params[:id])
+    @experiments = @sequencing.experiments.paginate(page: params[:page])
   end
 
   def update

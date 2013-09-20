@@ -25,5 +25,17 @@ namespace :db do
       completed_on = (50-n).weeks.ago
       Sequencing.create!(run: run, completed_on: completed_on)
     end
+
+    
+
+    Researcher.all(limit: 6).each do |researcher|
+      sequencing_offset = 0
+      (1..8).to_a.reverse.each do |n|
+        sequencing_offset += rand(3)
+        sequencing = Sequencing.offset(sequencing_offset).first
+        name = researcher.name.scan(/[A-Z]/).join + "%03d" % n
+        researcher.experiments.create!(sequencing: sequencing, name: name)
+      end
+    end
   end
 end
