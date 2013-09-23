@@ -1,8 +1,9 @@
 <% provide(:title, 'Sequencings') %>
 <h1>Sequencing Runs</h1>
-<h3>
-<%= link_to "Create New Run", new_sequencing_path %>
-</h3>
+
+<div class = "row center">
+<%= link_to "Create New Run", new_sequencing_path, class: "btn btn-large btn-primary" %>
+</div>
 
 
 <% if @uncompleted_sequencings.any? %>
