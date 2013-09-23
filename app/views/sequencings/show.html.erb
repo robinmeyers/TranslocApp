@@ -18,12 +18,8 @@
     </section>
   </aside>
   <div class="span8">
-    <%= form_for(@experiment) do |f| %>
-      <%= render 'shared/error_messages', object: f.object %>
-      <%= f.hidden_field :sequencing_id, :value => @sequencing.id %>
-      <%= f.text_field :name, placeholder: "Name your experiment..." %>
-      <%= f.submit "Create Experiment", class: "btn btn-large btn-primary" %>
-    <% end %>
+      <%= link_to "Create New Experiment", new_experiment_path(sequencing_id: @sequencing.id), class: "btn btn-large btn-primary" %>
+    
     <% if @sequencing.experiments.any? %>
       <h3>Experiments (<%= @sequencing.experiments.count %>)</h3>
       <ol class="experiments">
