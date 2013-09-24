@@ -132,7 +132,7 @@ aside {
   }
 }
 
-/* microposts */
+/* experiments */
 
 .experiments {
   list-style: none;
@@ -154,6 +154,14 @@ aside {
 .gravatar {
   float: left;
   margin-right: 10px;
+}
+
+.mid {
+  color: $blue;
+}
+
+.primer {
+  color: $red;
 }
 
 /* forms */

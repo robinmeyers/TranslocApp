@@ -1,0 +1,7 @@
+<tr>
+  <%= content_tag :td, experiment.name, class: "" %>
+  <%= content_tag :td, experiment.researcher.name , class: "" %>
+  <%= content_tag :td, content_tag(:span, experiment.mid, class: "mid") +
+        content_tag(:span, experiment.primer, class: "primer"), class: "" %>
+
+</tr>
