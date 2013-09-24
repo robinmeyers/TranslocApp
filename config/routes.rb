@@ -4,6 +4,7 @@ TranslocApp::Application.routes.draw do
   end
   resources :researchers
   resources :sessions, only: [:new, :create, :destroy]
+  resources :experiments, only: [:new, :create, :destroy]
   root  'static_pages#home'
   match '/signup',  to: 'researchers#new',      via: 'get'
   match '/signin',  to: 'sessions#new',         via: 'get'

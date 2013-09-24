@@ -25,6 +25,8 @@ class SequencingsController < ApplicationController
 
   def show
     @sequencing = Sequencing.find(params[:id])
+    # @experiments = @sequencing.experiments.paginate(page: params[:page])
+    # @experiment = current_researcher.experiments.build if signed_in?
   end
 
   def update

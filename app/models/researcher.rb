@@ -1,5 +1,7 @@
 class Researcher < ActiveRecord::Base
 
+  has_many :experiments
+
   before_save { email.downcase! }
   before_create :create_remember_token
 
@@ -14,7 +16,7 @@ class Researcher < ActiveRecord::Base
 
   attr_accessor :labkey, :adminkey
 
-  self.per_page = 10
+  self.per_page = 20
 
   def Researcher.new_remember_token
     SecureRandom.urlsafe_base64

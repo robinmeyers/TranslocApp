@@ -1,5 +1,7 @@
 class Sequencing < ActiveRecord::Base
 
+  has_many :experiments
+
   default_scope -> { order('completed_on DESC') }
   scope :uncompleted, -> { where(completed_on: nil) }
   scope :completed, -> { where.not(completed_on: nil) }

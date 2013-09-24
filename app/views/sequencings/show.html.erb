@@ -17,4 +17,25 @@
       <% end %>
     </section>
   </aside>
+  <div class="span8">
+      
+    
+    <% if @sequencing.experiments.any? %>
+      <h3>Experiments (<%= @sequencing.experiments.count %>)</h3>
+      <table class="table table-hover table-condensed">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Researcher</th>
+            <th>Barcode (<span class="mid">MID</span> + <span class="primer">Primer</span>)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= render partial: 'experiments/sequencing_experiment',
+            collection: @sequencing.experiments, as: 'experiment' %>
+        </tbody>
+      </table>
+    <% end %>
+    <%= link_to "Create New Experiment", new_experiment_path(sequencing_id: @sequencing.id), class: "btn btn-large btn-primary" %>
+  </div>
 </div>
