@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Sheet1">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">id</Data></Cell>
+        <Cell><Data ss:Type="String">experiment</Data></Cell>
+        <Cell><Data ss:Type="String">sequencing</Data></Cell>
+        <Cell><Data ss:Type="String">researcher</Data></Cell>
+        <Cell><Data ss:Type="String">assembly</Data></Cell>
+      </Row>
+    <% @sequencing.experiments.each do |experiment| %>
+      <Row>
+        <Cell><Data ss:Type="Number"><%= experiment.id %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= experiment.name %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= experiment.sequencing.run %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= experiment.researcher.name %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= experiment.assembly %></Data></Cell>
+      </Row>
+    <% end %>
+    </Table>
+  </Worksheet>
+</Workbook>

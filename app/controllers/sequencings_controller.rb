@@ -25,7 +25,11 @@ class SequencingsController < ApplicationController
 
   def show
     @sequencing = Sequencing.find(params[:id])
-    # @experiments = @sequencing.experiments.paginate(page: params[:page])
+    respond_to do |format|
+      format.html
+      format.txt { send_data @sequencing.experiments.to_txt(col_sep: "\t"), disposition: "attachment", filename: @sequencing.run + "_metadata.txt" }
+      format.xls { headers["Content-Disposition"] = "attachment; filename=\"#{@sequencing.run}_metadata.xls\"" }
+    end
     # @experiment = current_researcher.experiments.build if signed_in?
   end
 

@@ -35,4 +35,13 @@ class Experiment < ActiveRecord::Base
   validates :brkstart, presence: true, numericality: { only_integer: true }
   validates :brkend, presence: true, numericality: { only_integer: true }
 
+  def self.to_txt(options = {})
+    CSV.generate(options) do |txt|
+      txt << %w[id experiment sequencing researcher assembly]
+      all.each do |experiment|
+        txt << [experiment.id, experiment.name, experiment.sequencing.run, experiment.researcher.name, experiment.assembly]
+      end
+    end
+  end
+
 end
