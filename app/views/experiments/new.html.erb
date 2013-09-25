@@ -2,11 +2,21 @@
 <%= form_for(@experiment) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>
   <%= f.hidden_field :sequencing_id, :value => @sequencing.id %>
+  <h1>Create New Experiment in <%= @sequencing.run %></h1>
   <div class="span5 offset1">
     <%= f.label :name %>
     <%= f.text_field :name, placeholder: "Name your experiment..." %>
-    <%= f.label :mid %>
-    <%= f.text_field :mid %>
+    <h4 class="center">Sequence Information</h4>
+    <div class="row">
+      <div class="span3">
+        <%= f.label :mid %>
+        <%= f.text_field :mid %>
+      </div>
+      <div class="span2">
+        <%= f.label :cutter %>
+        <%= f.text_field :cutter %>
+      </div>
+    </div>
     <%= f.label :primer %>
     <%= f.text_field :primer %>
     <%= f.label :adapter %>
@@ -15,12 +25,12 @@
     <%= f.text_area :breaksite, rows: "4" %>
   </div>
   <div class="span5">
-      <%= f.label :description %>
-      <%= f.text_area :description, rows: "2" %>
-      <%= f.label :assembly %>
-      <%= f.select :assembly, options_for_select(%w[mm9 hg19]) %>
-      <h4 class="center"> Breaksite </h4>
-      <div class="row">
+    <%= f.label :description %>
+    <%= f.text_area :description, rows: "2", placeholder: "Provide a brief description..." %>
+    <%= f.label :assembly %>
+    <%= f.select :assembly, options_for_select(%w[mm9 hg19]) %>
+    <h4 class="center"> Breaksite </h4>
+    <div class="row">
       <div class="span3">
         <%= f.label :brkchr, "Chromosome" %>
         <%= f.text_field :brkchr %>
@@ -29,15 +39,13 @@
         <%= f.label :brkstrand, "Strand" %>
         <%= f.select :brkstrand, options_for_select([["+",true],["-",false]]) %>
       </div>
-      </div>
-      <%= f.label :brkstart, "Start" %>
-      <%= f.text_field :brkstart %>  
-      <%= f.label :brkend, "End" %>
-      <%= f.text_field :brkend %>   
+    </div>
+    <%= f.label :brkstart, "Start" %>
+    <%= f.text_field :brkstart %>  
+    <%= f.label :brkend, "End" %>
+    <%= f.text_field :brkend %>
   </div>
-  <div class="span5">
-      
-  </div>
+
   <div class="row">
     <div class="span2 offset5">
       <%= f.submit "Create Experiment", class: "btn btn-large btn-primary" %>
