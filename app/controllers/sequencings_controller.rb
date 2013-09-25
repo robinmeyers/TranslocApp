@@ -1,6 +1,6 @@
 class SequencingsController < ApplicationController
 
-  before_action :signed_in_researcher
+  before_action :signed_in_researcher, except: [:index, :show]
       
   def new
     @sequencing = Sequencing.new

@@ -40,6 +40,6 @@ class ExperimentsController < ApplicationController
     def experiment_params
       params.require(:experiment).permit(:name, :sequencing_id, 
         :assembly, :brkchr, :brkstart, :brkend, :brkstrand, :mid, :primer,
-        :adapter, :breaksite, :description)
+        :adapter, :breaksite, :cutter, :description)
     end
 end

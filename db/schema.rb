@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130924204143) do
+ActiveRecord::Schema.define(version: 20130925204608) do
 
   create_table "experiments", force: true do |t|
     t.string   "name"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20130924204143) do
     t.integer  "brkend"
     t.text     "description"
     t.boolean  "brkstrand"
+    t.string   "cutter"
   end
 
   add_index "experiments", ["researcher_id", "sequencing_id"], name: "index_experiments_on_researcher_id_and_sequencing_id"

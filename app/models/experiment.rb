@@ -8,6 +8,7 @@ class Experiment < ActiveRecord::Base
     primer.upcase!
     adapter.upcase!
     breaksite.upcase!
+    cutter.upcase!
   end
 
   default_scope -> { joins(:sequencing).order('sequencings.completed_on DESC') }
@@ -27,6 +28,9 @@ class Experiment < ActiveRecord::Base
   validates :adapter, presence: true, format:
       { with: VALID_SEQUENCE_REGEX, message: "must be a string of only A, C, G, and T" }
   validates :breaksite, presence: true, format:
+    { with: VALID_SEQUENCE_REGEX, message: "must be a string of only A, C, G, and T" }
+
+  validates :cutter, format:
     { with: VALID_SEQUENCE_REGEX, message: "must be a string of only A, C, G, and T" }
 
   validates :brkchr, presence: true, inclusion: 
