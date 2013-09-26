@@ -1,0 +1,7 @@
+wb = xlsx_package.workbook
+wb.add_worksheet do |sheet|
+  sheet.add_row %w[id experiment sequencing researcher assembly]
+  @sequencing.experiments.each do |exp|
+    sheet.add_row [exp.id, exp.name, exp.sequencing.run, exp.researcher.name, exp.assembly]
+  end
+end
