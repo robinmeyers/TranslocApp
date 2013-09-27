@@ -28,6 +28,7 @@ class ExperimentsController < ApplicationController
       flash[:success] = @experiment.name + " was successfully created!"
       redirect_to sequencing_path(@experiment.sequencing)
     else
+      @experiment_import = ExperimentImport.new()
       render 'new'
     end
   end
