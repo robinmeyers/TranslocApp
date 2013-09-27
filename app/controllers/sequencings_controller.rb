@@ -12,7 +12,7 @@ class SequencingsController < ApplicationController
   end
 
   def create
-    @sequencing = Sequencing.new(run: params[:sequencing][:run])
+    @sequencing = Sequencing.new(sequencing_params)
     if @sequencing.save
       flash[:success] = @sequencing.run + " successfully created"
       redirect_to @sequencing
@@ -45,5 +45,10 @@ class SequencingsController < ApplicationController
 
   def destroy
   end
+
+  private
+    def sequencing_params
+      params.require(:sequencing).permit(:run)
+    end
 
 end

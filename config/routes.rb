@@ -5,6 +5,7 @@ TranslocApp::Application.routes.draw do
   resources :researchers
   resources :sessions, only: [:new, :create, :destroy]
   resources :experiments, only: [:new, :create, :destroy]
+  resources :experiment_imports, only: [:new, :create]
   root  'static_pages#home'
   match '/signup',  to: 'researchers#new',      via: 'get'
   match '/signin',  to: 'sessions#new',         via: 'get'

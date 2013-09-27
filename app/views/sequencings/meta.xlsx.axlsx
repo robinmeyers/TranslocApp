@@ -1,7 +1,29 @@
 wb = xlsx_package.workbook
 wb.add_worksheet do |sheet|
-  sheet.add_row %w[id experiment sequencing researcher assembly]
+  header = %w[Name Sequencing Researcher Description Assembly Brkchr Brkstart Brkend Brkstrand MID Primer Adapter Breaksite Cutter]
+  sheet.add_row header
+
   @sequencing.experiments.each do |exp|
-    sheet.add_row [exp.id, exp.name, exp.sequencing.run, exp.researcher.name, exp.assembly]
+    sheet.add_row [exp.name, exp.sequencing.run, exp.researcher.name, exp.description, exp.assembly, exp.brkchr, exp.brkstart, exp.brkend, exp.brkstrand, exp.mid, exp.primer, exp.adapter, exp.breaksite, exp.cutter]
   end
+
+  description_style = wb.styles.add_style( alignment: { wrapText: true } )
+  name_style = wb.styles.add_style( b: true )
+  mid_style = wb.styles.add_style( fg_color: "FF049CDB" )
+  primer_style = wb.styles.add_style( fg_color: "FF9D261D" )
+  assembly_style = wb.styles.add_style( i: true )
+
+
+
+  widths = Array.new(header.length)
+  widths[header.index("Breaksite")] = 20
+  widths[header.index("Description")] = 20
+  sheet.column_widths *widths
+
+  sheet.col_style( header.index("Name"), name_style, row_offset: 1 )
+  sheet.col_style( header.index("Assembly"), assembly_style, row_offset: 1 )
+  sheet.col_style( header.index("MID"), mid_style, row_offset: 1 )
+  sheet.col_style( header.index("Primer"), primer_style, row_offset: 1 )
+  sheet.col_style( header.index("Description"), description_style, row_offset: 1 )
+  
 end

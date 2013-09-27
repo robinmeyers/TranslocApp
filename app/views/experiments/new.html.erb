@@ -1,8 +1,8 @@
 <% provide(:title, "New Experiment") %>
+<h1>Create New Experiment in <%= @sequencing.run %></h1>
 <%= form_for(@experiment) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>
   <%= f.hidden_field :sequencing_id, :value => @sequencing.id %>
-  <h1>Create New Experiment in <%= @sequencing.run %></h1>
   <div class="span5 offset1">
     <%= f.label :name %>
     <%= f.text_field :name, placeholder: "Name your experiment..." %>
@@ -50,5 +50,15 @@
     <div class="span2 offset5">
       <%= f.submit "Create Experiment", class: "btn btn-large btn-primary" %>
     </div>
-</div>
+  </div>
+<% end %>
+<h2>OR</h2>
+<h1>Import Experiments from Spreadsheet</h1>
+<%= form_for(@experiment_import) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  <%= f.hidden_field :sequencing_id, :value => @sequencing.id %>
+
+  <%= f.label :file %>
+  <%= f.file_field :file %>
+  <%= f.submit "Import Experiments", class: "btn btn-large btn-primary" %>
 <% end %>
