@@ -3,8 +3,8 @@ class ExperimentsController < ApplicationController
 
   def new
     @sequencing ||= Sequencing.find(params[:sequencing_id])
-    @researcher = current_researcher
-    @experiment = @sequencing.experiments.build(researcher: @researcher)
+    @experiment = @sequencing.experiments.build
+    @experiment_import = ExperimentImport.new()
   end
 
   # def create
@@ -22,11 +22,12 @@ class ExperimentsController < ApplicationController
 
   def create
     @experiment = current_researcher.experiments.build(experiment_params)
+    @sequencing = Sequencing.find(params[:experiment][:sequencing_id])
+    @experiment.sequencing = @sequencing
     if @experiment.save
       flash[:success] = @experiment.name + " was successfully created!"
       redirect_to sequencing_path(@experiment.sequencing)
     else
-      @sequencing = Sequencing.find(params[:experiment][:sequencing_id])
       render 'new'
     end
   end
@@ -38,7 +39,7 @@ class ExperimentsController < ApplicationController
   private
 
     def experiment_params
-      params.require(:experiment).permit(:name, :sequencing_id, 
+      params.require(:experiment).permit(:name, 
         :assembly, :brkchr, :brkstart, :brkend, :brkstrand, :mid, :primer,
         :adapter, :breaksite, :cutter, :description)
     end

@@ -12,7 +12,7 @@ class SequencingsController < ApplicationController
   end
 
   def create
-    @sequencing = Sequencing.new(run: params[:sequencing][:run])
+    @sequencing = Sequencing.new(sequencing_params)
     if @sequencing.save
       flash[:success] = @sequencing.run + " successfully created"
       redirect_to @sequencing
@@ -25,7 +25,11 @@ class SequencingsController < ApplicationController
 
   def show
     @sequencing = Sequencing.find(params[:id])
-    # @experiments = @sequencing.experiments.paginate(page: params[:page])
+    respond_to do |format|
+      format.html
+      format.txt { send_data @sequencing.experiments.to_txt(col_sep: "\t"), disposition: "attachment", filename: @sequencing.run + "_metadata.txt" }
+      format.xlsx { render xlsx: "meta", disposition: "attachment", :filename => @sequencing.run + "_metadata.xlsx"}
+    end
     # @experiment = current_researcher.experiments.build if signed_in?
   end
 
@@ -41,5 +45,10 @@ class SequencingsController < ApplicationController
 
   def destroy
   end
+
+  private
+    def sequencing_params
+      params.require(:sequencing).permit(:run)
+    end
 
 end

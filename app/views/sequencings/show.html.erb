@@ -22,6 +22,11 @@
     
     <% if @sequencing.experiments.any? %>
       <h3>Experiments (<%= @sequencing.experiments.count %>)</h3>
+      <p>
+        Download metadata:
+        <%= link_to "TXT", sequencing_path(@sequencing.id, format: "txt") %> | 
+        <%= link_to "Excel", sequencing_path(@sequencing.id, format: "xlsx") %>
+      </p>
       <table class="table table-hover table-condensed">
         <thead>
           <tr>
