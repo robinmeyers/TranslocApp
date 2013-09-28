@@ -9,8 +9,8 @@ wb.add_worksheet do |sheet|
 
   description_style = wb.styles.add_style( alignment: { wrapText: true } )
   name_style = wb.styles.add_style( b: true )
-  mid_style = wb.styles.add_style( fg_color: "FF049CDB" )
-  primer_style = wb.styles.add_style( fg_color: "FF9D261D" )
+  mid_style = wb.styles.add_style( fg_color: '0000FF' )
+  primer_style = wb.styles.add_style( fg_color: 'FF0000' )
   assembly_style = wb.styles.add_style( i: true )
 
 
