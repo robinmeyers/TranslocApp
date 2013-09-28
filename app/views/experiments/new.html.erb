@@ -56,13 +56,16 @@
 <% end %>
 <h2>OR</h2>
 <h1>Import Experiments from Spreadsheet</h1>
+
 <%= form_for(@experiment_import) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>
   <%= f.hidden_field :sequencing_id, :value => @sequencing.id %>
   <div class="center">
-    <%= f.file_field :file %>
+    <%= f.file_field :file, class: "filestyle", 'data-classButton' => "btn btn-file", 'data-buttonText' => "Select file" %>
+
   </div>
-  <div class="center">
+
+  <div class="row center">
     <%= f.submit "Import Experiments", class: "btn btn-large btn-primary" %>
   </div>
 <% end %>
