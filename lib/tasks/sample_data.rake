@@ -34,7 +34,30 @@ namespace :db do
         sequencing_offset += rand(3)
         sequencing = Sequencing.offset(sequencing_offset).first
         name = researcher.name.scan(/[A-Z]/).join + "%03d" % n
-        researcher.experiments.create!(sequencing: sequencing, name: name)
+        description = Faker::Lorem.sentence(5)
+        assembly = ["mm9","hg19"].sample
+        brkchr = ((1..22).to_a + ["X","Y"]).sample
+        brkstart = rand(100000000)
+        brkend = brkstart + rand(500)
+        brkstrand = ["+","-"].sample
+        mid = ["A","C","G","T"].values_at(*Array.new(rand(10)){rand(4)}).join
+        primer = ["A","C","G","T"].values_at(*Array.new(rand(10)+15){rand(4)}).join
+        adapter = ["A","C","G","T"].values_at(*Array.new(rand(10)+15){rand(4)}).join
+        breaksite = ["A","C","G","T"].values_at(*Array.new(rand(300)+200){rand(4)}).join
+        cutter = ["AGCT","GGAA",""].sample
+        researcher.experiments.create!(sequencing: sequencing,
+                                       name: name,
+                                       description: description,
+                                       assembly: assembly,
+                                       brkchr: brkchr,
+                                       brkstart: brkstart,
+                                       brkend: brkend,
+                                       brkstrand: brkstrand,
+                                       mid: mid,
+                                       primer: primer,
+                                       adapter: adapter,
+                                       breaksite: breaksite,
+                                       cutter: cutter)
       end
     end
   end

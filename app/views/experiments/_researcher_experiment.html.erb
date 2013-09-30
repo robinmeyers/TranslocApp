@@ -1,0 +1,8 @@
+<tr>
+  <%= content_tag :td, experiment.name, class: "" %>
+  <%= content_tag :td, experiment.description , class: "" %>
+  <%= content_tag :td, experiment.assembly, class: "" %>
+  <%= content_tag :td, "chr#{experiment.brkchr}:#{experiment.brkstart}-#{experiment.brkend} (#{experiment.brkstrand})" %>
+  <%= content_tag :td, experiment.cutter, class: "" %>
+
+</tr>
