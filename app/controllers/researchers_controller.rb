@@ -57,8 +57,8 @@ class ResearchersController < ApplicationController
   end
 
   def destroy
-    Researcher.find(params[:id]).destroy
-    flash[:success] = "Researcher destroyed."
+    @researcher = Researcher.destroy(params[:id])
+    flash[:success] = "Researcher #{@researcher.name} destroyed."
     redirect_to researchers_url
   end
 

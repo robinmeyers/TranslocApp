@@ -4,8 +4,8 @@
   <%= content_tag :td, content_tag(:span, experiment.mid, class: "mid") +
         content_tag(:span, experiment.primer, class: "primer"), class: "" %>
   <% if current_researcher.present? && current_researcher.admin? || current_researcher?(experiment.researcher) %>
-    <%= content_tag :td, (link_to "edit", edit_experiment_path(experiment)) + " | " +
-                         (link_to "delete", experiment, method: :delete,
+    <%= content_tag :td, (link_to "edit", edit_experiment_path(experiment, return_to: request.path)) + " | " +
+                         (link_to "delete", experiment_path(experiment, return_to: request.path), method: :delete,
         data: { confirm: "Are you sure you want to delete #{experiment.name}?"}) %>
   <% else %>
     <%= content_tag :td, "" %>
