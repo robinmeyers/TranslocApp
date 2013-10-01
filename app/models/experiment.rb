@@ -8,7 +8,6 @@ class Experiment < ActiveRecord::Base
     
   end
 
-  default_scope -> { joins(:sequencing).order('sequencings.completed_on DESC') }
 
   validates :name, presence: true, length: {maximum: 50},
                    uniqueness: { scope: :sequencing_id }

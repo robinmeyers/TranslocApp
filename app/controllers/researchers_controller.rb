@@ -32,7 +32,7 @@ class ResearchersController < ApplicationController
 
   def show
     @researcher = Researcher.find(params[:id])
-    @experiments = @researcher.experiments.paginate(page: params[:page])
+    @experiments = @researcher.experiments.order("id ASC").paginate(page: params[:page])
   end
 
   def edit

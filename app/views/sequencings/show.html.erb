@@ -38,7 +38,7 @@
         </thead>
         <tbody>
           <%= render partial: 'experiments/sequencing_experiment',
-            collection: @sequencing.experiments, as: 'experiment' %>
+            collection: @sequencing.experiments.order("id DESC"), as: 'experiment' %>
         </tbody>
       </table>
     <% end %>
