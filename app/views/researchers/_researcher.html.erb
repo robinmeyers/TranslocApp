@@ -3,6 +3,6 @@
   <%= link_to researcher.name, researcher %>
    <% if current_researcher.admin? && !current_researcher?(researcher) %>
     | <%= link_to "delete", researcher, method: :delete,
-                                  data: { confirm: "You sure?" } %>
+                data: { confirm: "Are you sure you want to delete #{researcher.name}?" } %>
   <% end %>
 </li>

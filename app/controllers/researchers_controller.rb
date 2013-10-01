@@ -32,7 +32,7 @@ class ResearchersController < ApplicationController
 
   def show
     @researcher = Researcher.find(params[:id])
-    @experiments = @researcher.experiments.paginate(page: params[:page])
+    @experiments = @researcher.experiments.order("id ASC").paginate(page: params[:page])
   end
 
   def edit
@@ -57,8 +57,8 @@ class ResearchersController < ApplicationController
   end
 
   def destroy
-    Researcher.find(params[:id]).destroy
-    flash[:success] = "Researcher destroyed."
+    @researcher = Researcher.destroy(params[:id])
+    flash[:success] = "Researcher #{@researcher.name} destroyed."
     redirect_to researchers_url
   end
 

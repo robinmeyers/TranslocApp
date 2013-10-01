@@ -33,11 +33,12 @@
             <th>Name</th>
             <th>Researcher</th>
             <th>Barcode (<span class="mid">MID</span> + <span class="primer">Primer</span>)</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           <%= render partial: 'experiments/sequencing_experiment',
-            collection: @sequencing.experiments, as: 'experiment' %>
+            collection: @sequencing.experiments.order("id DESC"), as: 'experiment' %>
         </tbody>
       </table>
     <% end %>

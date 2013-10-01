@@ -1,8 +1,16 @@
 <tr>
   <%= content_tag :td, experiment.name, class: "" %>
+  <%= content_tag :td, experiment.sequencing.run, class: "" %>
   <%= content_tag :td, experiment.description , class: "" %>
   <%= content_tag :td, experiment.assembly, class: "" %>
   <%= content_tag :td, "chr#{experiment.brkchr}:#{experiment.brkstart}-#{experiment.brkend} (#{experiment.brkstrand})" %>
   <%= content_tag :td, experiment.cutter, class: "" %>
+  <% if current_researcher.admin? || current_researcher?(experiment.researcher) %>
+    <%= content_tag :td, (link_to "edit", edit_experiment_path(experiment, return_to: request.path)) + " | " +
+                         (link_to "delete", experiment_path(experiment, return_to: request.path), method: :delete,
+        data: { confirm: "Are you sure you want to delete #{experiment.name}?"}) %>
+  <% else %>
+    <%= content_tag :td, "" %>
+  <% end %>
 
 </tr>
