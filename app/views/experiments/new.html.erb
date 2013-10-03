@@ -2,7 +2,7 @@
 <h1>Create New Experiment in <%= @sequencing.run %></h1>
 <%= form_for(@experiment) do |f| %>
   <%= f.hidden_field :sequencing_id, :value => @experiment.sequencing.id %>
-  <%= render 'experiment_fields', f: f %>
+  <%= render 'experiments/experiment_fields', f: f %>
   <div class="row">
     <div class="center">
       <%= f.submit "Create Experiment", class: "btn btn-large btn-primary" %>

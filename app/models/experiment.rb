@@ -29,6 +29,9 @@ class Experiment < ActiveRecord::Base
   validates :cutter, format:
     { with: VALID_SEQUENCE_REGEX, message: "must be a string of only A, C, G, and T" }
 
+  validates :assembly, presence: true, inclusion:
+                  { in: ["mm9","hg19"], message: "is not a valid assembly" }
+
   validates :brkchr, presence: true, inclusion: 
                   { in: ((1..22).to_a + ["X","Y"]).map { |a| a.to_s }, message: " is not a valid chromosome name" }
   validates :brkstrand, presence: true, inclusion: { in: ["+", "-"],
