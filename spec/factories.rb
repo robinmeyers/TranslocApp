@@ -22,6 +22,18 @@ FactoryGirl.define do
     name "Exp001"
     researcher
     sequencing
+    assembly "mm9"
+    mid ""
+    primer "ACGTACGTACGT"
+    breaksite "ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGT"
+    adapter "ACGTACGT"
+    brkchr "15"
+    brkstart 1000000
+    brkend 10000001
+    description "Test library"
+    cutter "TTAA"
+    brkstrand "-"
+
   end
 
 end

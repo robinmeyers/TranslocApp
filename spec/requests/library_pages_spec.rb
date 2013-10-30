@@ -9,7 +9,7 @@ describe "Library pages" do
   before { sign_in researcher }
 
   describe "library creation" do
-    before { visit sequencing_path(sequencing) }
+    before { visit new_library_path(sequencing_id: sequencing.id) }
 
     describe "with invalid information" do
 
@@ -25,7 +25,21 @@ describe "Library pages" do
 
     describe "with valid information" do
 
-      before { fill_in 'library_name', with: "Exp001" }
+      before do
+        fill_in 'library_name', with: "Lib001"
+        fill_in 'library_mid', with: "ACGT"
+        fill_in 'library_cutter', with: "TTAA"
+        fill_in 'library_primer', with: "ACGTACGTACGT"
+        fill_in 'library_breaksite', with: "ACGTACGTACGTACGTACGT"
+        fill_in 'library_adapter', with: "ACGTACGT"
+        select 'mm9', from: 'library_assembly'
+        fill_in 'library_brkchr', with: "15"
+        fill_in 'library_brkstart', with: 1000000
+        fill_in 'library_brkend', with: 1000001
+        select '+', from: 'library_brkstrand'
+
+      end
+
       it "should create a library" do
         expect { click_button "Create Library" }.to change(Library, :count).by(1)
       end

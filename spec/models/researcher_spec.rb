@@ -126,23 +126,5 @@ describe Researcher do
     its(:remember_token) { should_not be_blank }
   end
 
-  describe "library associations" do
-
-    before do
-      @researcher.save
-      @old_sequencing = FactoryGirl.create(:completed_sequencing)
-      @new_sequencing = FactoryGirl.create(:completed_sequencing)
-    end
-    let!(:older_library) do
-      FactoryGirl.create(:library, researcher: @researcher, sequencing: @old_sequencing)
-    end
-    let!(:newer_library) do
-      FactoryGirl.create(:library, researcher: @researcher, sequencing: @new_sequencing)
-    end
-
-    it "should have the right libraries in the right order" do
-      expect(@researcher.libraries.to_a).to eq [newer_library, older_library]
-    end
-  end
 
 end

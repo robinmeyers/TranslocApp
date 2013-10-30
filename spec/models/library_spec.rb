@@ -5,7 +5,7 @@ describe Library do
   let(:researcher) { FactoryGirl.create(:researcher) }
   let(:sequencing) { FactoryGirl.create(:sequencing) }
   before do
-    @library = researcher.libraries.build(name: "Exp001", sequencing_id: sequencing.id)
+    @library = FactoryGirl.create(:library, researcher: researcher, sequencing: sequencing)
   end
 
   subject { @library }

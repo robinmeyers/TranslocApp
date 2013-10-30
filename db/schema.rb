@@ -11,7 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131030175844) do
+ActiveRecord::Schema.define(version: 20131030213225) do
+
+  create_table "junctions", force: true do |t|
+    t.string   "qname"
+    t.integer  "qstart"
+    t.integer  "qend"
+    t.string   "rname"
+    t.integer  "rstart"
+    t.integer  "rend"
+    t.string   "strand"
+    t.text     "sequence"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "junction"
+  end
+
+  add_index "junctions", ["rname", "junction", "strand"], name: "index_junctions_on_rname_and_junction_and_strand"
 
   create_table "libraries", force: true do |t|
     t.string   "name"
