@@ -1,4 +1,4 @@
-class ExperimentImport
+class LibraryImport
   include ActiveModel::Model
 
   attr_accessor :file, :sequencing_id, :researcher_id
@@ -12,12 +12,12 @@ class ExperimentImport
   end
 
   def save
-    if imported_experiments.map(&:valid?).all?
-      imported_experiments.each(&:save!)
+    if imported_libraries.map(&:valid?).all?
+      imported_libraries.each(&:save!)
       true
     else
-      imported_experiments.each_with_index do |experiment, index|
-        experiment.errors.full_messages.each do |message|
+      imported_libraries.each_with_index do |library, index|
+        library.errors.full_messages.each do |message|
           errors.add :base, "Row #{index+2}: #{message}"
         end
       end
@@ -25,24 +25,24 @@ class ExperimentImport
     end
   end
 
-  def imported_experiments
-    @imported_experiments ||= load_imported_experiments
+  def imported_libraries
+    @imported_libraries ||= load_imported_libraries
   end
 
-  def load_imported_experiments
+  def load_imported_libraries
     spreadsheet = open_spreadsheet
     header = spreadsheet.row(1).map(&:downcase).map(&:to_sym)
     (2..spreadsheet.last_row).map do |i|
       importparams = ActionController::Parameters.new({
-              experiment: Hash[[header, spreadsheet.row(i)].transpose]
+              library: Hash[[header, spreadsheet.row(i)].transpose]
             })
 
-      # experiment = Experiment.find_by(id: params[:experiment][:id]) || Researcher.find(researcher_id).experiments.build(experiment_params)
-      experiment = Researcher.find(researcher_id).experiments.build(experiment_import_params(importparams))
-      experiment.sequencing = Sequencing.find(sequencing_id)
-      Rails.logger.debug "imported experiment: #{experiment.attributes.inspect}"
+      # library = Library.find_by(id: params[:library][:id]) || Researcher.find(researcher_id).libraries.build(library_params)
+      library = Researcher.find(researcher_id).libraries.build(library_import_params(importparams))
+      library.sequencing = Sequencing.find(sequencing_id)
+      Rails.logger.debug "imported library: #{library.attributes.inspect}"
 
-      experiment
+      library
     end
   end
 
@@ -57,8 +57,8 @@ class ExperimentImport
 
   private
 
-    def experiment_import_params(importparams) 
-      importparams.require(:experiment).permit(:name, 
+    def library_import_params(importparams) 
+      importparams.require(:library).permit(:name, 
         :assembly, :brkchr, :brkstart, :brkend, :brkstrand, :mid, :primer,
         :adapter, :breaksite, :cutter, :description)
     end

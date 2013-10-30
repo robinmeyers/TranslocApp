@@ -1,0 +1,12 @@
+<% provide(:title, "Edit Library") %>
+<h1>Edit Library Metadata</h1>
+
+<%= form_for(@library) do |f| %>
+  <%= render 'library_fields', f: f %>
+  <div class="row">
+    <div class="center">
+      <%= f.submit "Save Changes", class: "btn btn-large btn-primary" %>
+    </div>
+  </div>
+<% end %>
+

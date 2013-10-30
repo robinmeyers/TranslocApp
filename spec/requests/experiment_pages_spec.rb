@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Experiment pages" do
+describe "Library pages" do
 
   subject { page }
 
@@ -8,26 +8,26 @@ describe "Experiment pages" do
   let(:sequencing) { FactoryGirl.create(:completed_sequencing) }
   before { sign_in researcher }
 
-  describe "experiment creation" do
+  describe "library creation" do
     before { visit sequencing_path(sequencing) }
 
     describe "with invalid information" do
 
-      it "should not create an experiment" do
-        expect { click_button "Create Experiment" }.not_to change(Experiment, :count)
+      it "should not create an library" do
+        expect { click_button "Create Library" }.not_to change(Library, :count)
       end
 
       describe "error messages" do
-        before { click_button "Create Experiment" }
+        before { click_button "Create Library" }
         it { should have_content('error') }
       end
     end
 
     describe "with valid information" do
 
-      before { fill_in 'experiment_name', with: "Exp001" }
-      it "should create a experiment" do
-        expect { click_button "Create Experiment" }.to change(Experiment, :count).by(1)
+      before { fill_in 'library_name', with: "Exp001" }
+      it "should create a library" do
+        expect { click_button "Create Library" }.to change(Library, :count).by(1)
       end
     end
   end

@@ -18,7 +18,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :experiment do
+  factory :library do
     name "Exp001"
     researcher
     sequencing

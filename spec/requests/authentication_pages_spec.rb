@@ -98,15 +98,15 @@ describe "Authentication" do
         end
       end
 
-      describe "in the Experiments controller" do
+      describe "in the Libraries controller" do
 
         describe "submitting to the create action" do
-          before { post experiments_path }
+          before { post libraries_path }
           specify { expect(response).to redirect_to(signin_path) }
         end
 
         describe "submitting to the destroy action" do
-          before { delete experiment_path(FactoryGirl.create(:experiment)) }
+          before { delete library_path(FactoryGirl.create(:library)) }
           specify { expect(response).to redirect_to(signin_path) }
         end
       end

@@ -27,10 +27,10 @@ class SequencingsController < ApplicationController
     @sequencing = Sequencing.find(params[:id])
     respond_to do |format|
       format.html
-      format.txt { send_data @sequencing.experiments.to_txt(col_sep: "\t"), disposition: "attachment", filename: @sequencing.run + "_metadata.txt" }
+      format.txt { send_data @sequencing.libraries.to_txt(col_sep: "\t"), disposition: "attachment", filename: @sequencing.run + "_metadata.txt" }
       format.xlsx { render xlsx: "meta", disposition: "attachment", :filename => @sequencing.run + "_metadata.xlsx"}
     end
-    # @experiment = current_researcher.experiments.build if signed_in?
+    # @library = current_researcher.libraries.build if signed_in?
   end
 
   def update

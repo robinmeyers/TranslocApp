@@ -3,7 +3,7 @@ wb.add_worksheet do |sheet|
   header = %w[Name Sequencing Researcher Description Assembly Brkchr Brkstart Brkend Brkstrand MID Primer Adapter Breaksite Cutter]
   sheet.add_row header
 
-  @sequencing.experiments.each do |exp|
+  @sequencing.libraries.each do |exp|
     sheet.add_row [exp.name, exp.sequencing.run, exp.researcher.name, exp.description, exp.assembly, exp.brkchr, exp.brkstart, exp.brkend, exp.brkstrand, exp.mid, exp.primer, exp.adapter, exp.breaksite, exp.cutter]
   end
 

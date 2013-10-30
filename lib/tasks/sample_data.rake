@@ -45,7 +45,7 @@ namespace :db do
         adapter = ["A","C","G","T"].values_at(*Array.new(rand(10)+15){rand(4)}).join
         breaksite = ["A","C","G","T"].values_at(*Array.new(rand(300)+200){rand(4)}).join
         cutter = ["AGCT","GGAA",""].sample
-        researcher.experiments.create!(sequencing: sequencing,
+        researcher.libraries.create!(sequencing: sequencing,
                                        name: name,
                                        description: description,
                                        assembly: assembly,

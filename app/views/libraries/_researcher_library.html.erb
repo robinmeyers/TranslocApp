@@ -1,0 +1,16 @@
+<tr>
+  <%= content_tag :td, library.name, class: "" %>
+  <%= content_tag :td, library.sequencing.run, class: "" %>
+  <%= content_tag :td, library.description , class: "" %>
+  <%= content_tag :td, library.assembly, class: "" %>
+  <%= content_tag :td, "chr#{library.brkchr}:#{library.brkstart}-#{library.brkend} (#{library.brkstrand})" %>
+  <%= content_tag :td, library.cutter, class: "" %>
+  <% if current_researcher.admin? || current_researcher?(library.researcher) %>
+    <%= content_tag :td, (link_to "edit", edit_library_path(library, return_to: request.path)) + " | " +
+                         (link_to "delete", library_path(library, return_to: request.path), method: :delete,
+        data: { confirm: "Are you sure you want to delete #{library.name}?"}) %>
+  <% else %>
+    <%= content_tag :td, "" %>
+  <% end %>
+
+</tr>
