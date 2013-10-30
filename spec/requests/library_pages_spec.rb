@@ -8,6 +8,23 @@ describe "Library pages" do
   let(:sequencing) { FactoryGirl.create(:completed_sequencing) }
   before { sign_in researcher }
 
+  describe "library page" do
+    let(:library) { FactoryGirl.create(:library, researcher: researcher, sequencing: sequencing) }
+    let!(:j1) { FactoryGirl.create(:junction, library: library, rname: "12") }
+    let!(:j2) { FactoryGirl.create(:junction, library: library, rname: "15") }
+
+    before { visit library_path(library) }
+
+    it { should have_content(library.name) }
+    it { should have_title(library.name) }
+
+    describe "junctions" do
+      it { should have_content(j1.rname) }
+      it { should have_content(j2.rname) }
+      it { should have_content(library.junctions.count) }
+    end
+  end
+
   describe "library creation" do
     before { visit new_library_path(sequencing_id: sequencing.id) }
 

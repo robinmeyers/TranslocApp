@@ -9,7 +9,10 @@ class LibrariesController < ApplicationController
     @library_import = LibraryImport.new()
   end
 
- 
+  def show
+    @library = Library.find(params[:id])
+    @junctions = @library.junctions
+  end 
 
   def create
     @library = current_researcher.libraries.build(library_params)

@@ -1,5 +1,5 @@
 <tr>
-  <%= content_tag :td, library.name, class: "" %>
+  <%= content_tag :td, (link_to library.name, library_path(library)), class: "" %>
   <%= content_tag :td, library.sequencing.run, class: "" %>
   <%= content_tag :td, library.description , class: "" %>
   <%= content_tag :td, library.assembly, class: "" %>
