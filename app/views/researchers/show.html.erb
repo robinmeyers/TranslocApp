@@ -9,8 +9,8 @@
     </section>
   </aside>
   <div class="span10">
-    <% if @experiments.any? %>
-      <h3>Experiments (<%= @experiments.count %>)</h3>
+    <% if @libraries.any? %>
+      <h3>Libraries (<%= @libraries.count %>)</h3>
       <table class="table table-hover table-condensed">
         <thead>
           <tr>
@@ -24,11 +24,11 @@
           </tr>
         </thead>
         <tbody>
-          <%= render partial: 'experiments/researcher_experiment',
-            collection: @experiments, as: 'experiment' %>
+          <%= render partial: 'libraries/researcher_library',
+            collection: @libraries, as: 'library' %>
         </tbody>
       </table>
-      <%= will_paginate @experiments %>
+      <%= will_paginate @libraries %>
     <% end %>
   </div>
 </div>

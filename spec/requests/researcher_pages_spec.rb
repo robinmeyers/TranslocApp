@@ -75,8 +75,8 @@ describe "Researcher pages" do
   describe "profile page" do
     let(:researcher) { FactoryGirl.create(:researcher) }
     let(:sequencing) { FactoryGirl.create(:completed_sequencing) }
-    let!(:e1) { FactoryGirl.create(:experiment, researcher: researcher, name: "Exp001") }
-    let!(:e2) { FactoryGirl.create(:experiment, researcher: researcher, name: "Exp002") }
+    let!(:e1) { FactoryGirl.create(:library, researcher: researcher, name: "Exp001") }
+    let!(:e2) { FactoryGirl.create(:library, researcher: researcher, name: "Exp002") }
     before do
       sign_in researcher
       visit researcher_path(researcher)
@@ -85,10 +85,10 @@ describe "Researcher pages" do
     it { should have_content(researcher.name) }
     it { should have_title(researcher.name) }
 
-    describe "experiments" do
+    describe "libraries" do
       it { should have_content(e1.name) }
       it { should have_content(e2.name) }
-      it { should have_content(researcher.experiments.count) }
+      it { should have_content(researcher.libraries.count) }
     end
   end
 

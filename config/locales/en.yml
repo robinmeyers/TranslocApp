@@ -22,7 +22,7 @@
 en:
   activerecord: 
     attributes:
-      experiment:
+      library:
         brkchr: "Breaksite chromosome"
         brkstart: "Breaksite start"
         brkend: "Breaksite end"

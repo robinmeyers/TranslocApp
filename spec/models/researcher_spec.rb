@@ -17,7 +17,7 @@ describe Researcher do
   it { should respond_to(:remember_token) }
   it { should respond_to(:authenticate) }
   it { should respond_to(:admin) }
-  it { should respond_to(:experiments) }
+  it { should respond_to(:libraries) }
 
   it { should be_valid }
   it { should_not be_admin }
@@ -126,22 +126,22 @@ describe Researcher do
     its(:remember_token) { should_not be_blank }
   end
 
-  describe "experiment associations" do
+  describe "library associations" do
 
     before do
       @researcher.save
       @old_sequencing = FactoryGirl.create(:completed_sequencing)
       @new_sequencing = FactoryGirl.create(:completed_sequencing)
     end
-    let!(:older_experiment) do
-      FactoryGirl.create(:experiment, researcher: @researcher, sequencing: @old_sequencing)
+    let!(:older_library) do
+      FactoryGirl.create(:library, researcher: @researcher, sequencing: @old_sequencing)
     end
-    let!(:newer_experiment) do
-      FactoryGirl.create(:experiment, researcher: @researcher, sequencing: @new_sequencing)
+    let!(:newer_library) do
+      FactoryGirl.create(:library, researcher: @researcher, sequencing: @new_sequencing)
     end
 
-    it "should have the right experiments in the right order" do
-      expect(@researcher.experiments.to_a).to eq [newer_experiment, older_experiment]
+    it "should have the right libraries in the right order" do
+      expect(@researcher.libraries.to_a).to eq [newer_library, older_library]
     end
   end
 

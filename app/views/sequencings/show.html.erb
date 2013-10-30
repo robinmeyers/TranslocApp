@@ -20,8 +20,8 @@
   <div class="span9">
       
     
-    <% if @sequencing.experiments.any? %>
-      <h3>Experiments (<%= @sequencing.experiments.count %>)</h3>
+    <% if @sequencing.libraries.any? %>
+      <h3>Libraries (<%= @sequencing.libraries.count %>)</h3>
       <p>
         Download metadata:
         <%= link_to "TXT", sequencing_path(@sequencing.id, format: "txt") %> | 
@@ -37,11 +37,11 @@
           </tr>
         </thead>
         <tbody>
-          <%= render partial: 'experiments/sequencing_experiment',
-            collection: @sequencing.experiments.order("id DESC"), as: 'experiment' %>
+          <%= render partial: 'libraries/sequencing_library',
+            collection: @sequencing.libraries.order("id DESC"), as: 'library' %>
         </tbody>
       </table>
     <% end %>
-    <%= link_to "Create New Experiment", new_experiment_path(sequencing_id: @sequencing.id), class: "btn btn-large btn-primary" %>
+    <%= link_to "Create New Library", new_library_path(sequencing_id: @sequencing.id), class: "btn btn-large btn-primary" %>
   </div>
 </div>

@@ -11,9 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130927192525) do
+ActiveRecord::Schema.define(version: 20131030175844) do
 
-  create_table "experiments", force: true do |t|
+  create_table "libraries", force: true do |t|
     t.string   "name"
     t.integer  "researcher_id"
     t.integer  "sequencing_id"
@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 20130927192525) do
     t.string   "brkstrand"
   end
 
-  add_index "experiments", ["researcher_id", "sequencing_id"], name: "index_experiments_on_researcher_id_and_sequencing_id"
+  add_index "libraries", ["researcher_id", "sequencing_id"], name: "index_libraries_on_researcher_id_and_sequencing_id"
 
   create_table "researchers", force: true do |t|
     t.string   "name"

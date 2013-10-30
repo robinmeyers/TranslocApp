@@ -1,4 +1,4 @@
-class Experiment < ActiveRecord::Base
+class Library < ActiveRecord::Base
 
   belongs_to :researcher
   belongs_to :sequencing
@@ -43,9 +43,9 @@ class Experiment < ActiveRecord::Base
 
   def self.to_txt(options = {})
     CSV.generate(options) do |txt|
-      txt << %w[Id Experiment Sequencing Researcher Assembly]
-      all.each do |experiment|
-        txt << [experiment.id, experiment.name, experiment.sequencing.run, experiment.researcher.name, experiment.assembly]
+      txt << %w[Id Library Sequencing Researcher Assembly]
+      all.each do |library|
+        txt << [library.id, library.name, library.sequencing.run, library.researcher.name, library.assembly]
       end
     end
   end
