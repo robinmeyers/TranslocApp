@@ -12,6 +12,10 @@ class LibrariesController < ApplicationController
   def show
     @library = Library.find(params[:id])
     @junctions = @library.junctions
+    respond_to do |format|
+      format.html
+      format.json { render json: @junctions, only: [:rname, :junction, :strand] }
+    end
   end 
 
   def create

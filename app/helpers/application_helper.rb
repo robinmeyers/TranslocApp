@@ -10,4 +10,8 @@ module ApplicationHelper
     end
   end
 
+  def javascript(*files)
+    content_for(:javascripts) { javascript_include_tag *files, "data-turbolinks-track" => true }
+  end
+
 end

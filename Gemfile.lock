@@ -82,6 +82,9 @@ GEM
     jquery-rails (2.2.1)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
+    jquery-turbolinks (2.0.1)
+      railties (>= 3.1.0)
+      turbolinks
     json (1.8.0)
     mail (2.5.4)
       mime-types (~> 1.16)
@@ -195,6 +198,7 @@ DEPENDENCIES
   faker (= 1.1.2)
   jbuilder (= 1.0.2)
   jquery-rails (= 2.2.1)
+  jquery-turbolinks
   pg (= 0.15.1)
   rails (= 4.0.0)
   rails_12factor (= 0.0.2)

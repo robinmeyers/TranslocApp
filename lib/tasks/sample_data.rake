@@ -59,7 +59,9 @@ namespace :db do
                                        breaksite: breaksite,
                                        cutter: cutter)
         rand(1000).times do |n|
-          library.junctions.create!(rname: ((1..22).to_a + ["X","Y"]).sample, junction: rand(10000000), strand: ["+","-"].sample)
+          library.junctions.create!(rname: ((1..22).to_a + ["X","Y"]).sample,
+                                    junction: rand(10000000),
+                                    strand: ["+","-"].sample)
         end
       end
     end
