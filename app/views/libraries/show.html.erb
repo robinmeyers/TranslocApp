@@ -1,29 +1,40 @@
 <% provide(:title, @library.name) %>
 <% javascript 'libraries' %>
 <div class="row">
-  <aside class="span2">
-    <section>
-      <h1>
-        <%= @library.name %>
-      </h1>
-    </section>
-  </aside>
-  <div class="span10">
-    <h3>Junctions (<%= @junctions.count %>)</h3>
-    <% if @junctions.any? %>
+  <h1><%= @library.name %></h1>
+  <h3 class="center">Junctions (<%= @junctions.count %>)</h3>
+</div>
+<div class="container">
+  <ul class="nav nav-tabs">
+    <li><a href="#junction-table" data-toggle="tab">Table</a></li>
+    <li><a href="#junction-sequences" data-toggle="tab">Sequences</a></li>
+    <li><a href="#junction-viewer" data-toggle="tab">Viewer</a></li>
+  </ul>
+  <div class="tab-content">  
+    <div id="junction-table" class="tab-pane active">
+      <div class="span6 offset3">
       
-      <table class="table table-hover table-condensed">
-        <thead>
-          <tr>
-            <th>Rname</th>
-            <th>Junction</th>
-            <th>Strand</th>
-          </tr>
-        </thead>
-        <tbody>
+        <% if @junctions.any? %>
+          
+          <table class="table table-hover table-condensed">
+            <thead>
+              <tr>
+                <th>Rname</th>
+                <th>Junction</th>
+                <th>Strand</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        <% end %>
+      </div>
+    </div>
+    <div id="junction-viewer" class="tab-pane">
+      <h3>A full javascript app? No way!</h3>
+    </div>
 
-        </tbody>
-      </table>
-    <% end %>
+    <div id="junction-sequences" class="tab-pane">
+      <h3>Put some Sequences here</h3>
+    </div>
   </div>
 </div>
