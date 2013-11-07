@@ -15,6 +15,7 @@ describe Library do
   it { should respond_to(:sequencing_id) }
   it { should respond_to(:researcher) }
   it { should respond_to(:sequencing) }
+  it { should respond_to(:junctions) }
   its(:researcher) { should eq researcher }
   its(:sequencing) { should eq sequencing }
 
@@ -28,6 +29,22 @@ describe Library do
   describe "when sequencing_id is not present" do
     before { @library.sequencing_id = nil }
     it { should_not be_valid}
+  end
+
+  describe "junction associations" do
+
+    before { @library.save }
+    let!(:junction) do
+      FactoryGirl.create(:junction, library: @library)
+    end
+    it "should destroy associated junctions" do
+      junctions = @library.junctions.to_a
+      @library.destroy
+      expect(junctions).not_to be_empty
+      junctions.each do |junction|
+        expect(Junction.where(id: junction.id)).to be_empty
+      end
+    end
   end
 
 end

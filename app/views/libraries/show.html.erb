@@ -1,0 +1,29 @@
+<% provide(:title, @library.name) %>
+<% javascript 'libraries' %>
+<div class="row">
+  <aside class="span2">
+    <section>
+      <h1>
+        <%= @library.name %>
+      </h1>
+    </section>
+  </aside>
+  <div class="span10">
+    <h3>Junctions (<%= @junctions.count %>)</h3>
+    <% if @junctions.any? %>
+      
+      <table class="table table-hover table-condensed">
+        <thead>
+          <tr>
+            <th>Rname</th>
+            <th>Junction</th>
+            <th>Strand</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>

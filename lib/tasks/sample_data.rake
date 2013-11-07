@@ -45,7 +45,7 @@ namespace :db do
         adapter = ["A","C","G","T"].values_at(*Array.new(rand(10)+15){rand(4)}).join
         breaksite = ["A","C","G","T"].values_at(*Array.new(rand(300)+200){rand(4)}).join
         cutter = ["AGCT","GGAA",""].sample
-        researcher.libraries.create!(sequencing: sequencing,
+        library = researcher.libraries.create!(sequencing: sequencing,
                                        name: name,
                                        description: description,
                                        assembly: assembly,
@@ -58,6 +58,11 @@ namespace :db do
                                        adapter: adapter,
                                        breaksite: breaksite,
                                        cutter: cutter)
+        rand(1000).times do |n|
+          library.junctions.create!(rname: ((1..22).to_a + ["X","Y"]).sample,
+                                    junction: rand(10000000),
+                                    strand: ["+","-"].sample)
+        end
       end
     end
   end

@@ -2,6 +2,7 @@ class Library < ActiveRecord::Base
 
   belongs_to :researcher
   belongs_to :sequencing
+  has_many :junctions, dependent: :destroy
 
   before_validation do
     format_attributes

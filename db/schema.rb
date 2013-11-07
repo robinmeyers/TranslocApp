@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131030213225) do
+ActiveRecord::Schema.define(version: 20131107154314) do
 
   create_table "junctions", force: true do |t|
     t.string   "qname"
@@ -25,9 +25,10 @@ ActiveRecord::Schema.define(version: 20131030213225) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "junction"
+    t.integer  "library_id"
   end
 
-  add_index "junctions", ["rname", "junction", "strand"], name: "index_junctions_on_rname_and_junction_and_strand"
+  add_index "junctions", ["library_id", "rname", "junction"], name: "index_junctions_on_library_id_and_rname_and_junction"
 
   create_table "libraries", force: true do |t|
     t.string   "name"

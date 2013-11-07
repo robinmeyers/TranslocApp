@@ -33,7 +33,17 @@ FactoryGirl.define do
     description "Test library"
     cutter "TTAA"
     brkstrand "-"
+  end
 
+  factory :junction do
+    library
+    rname "15"
+    junction 1000000
+    rstart 1000000
+    rend 1000010
+    qname "XXXXXX"
+    qstart 100
+    qend 110
   end
 
 end
