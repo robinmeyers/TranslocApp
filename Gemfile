@@ -31,6 +31,8 @@ gem 'jquery-turbolinks'
 gem 'jbuilder', '1.0.2'
 gem 'axlsx_rails'
 gem 'roo'
+gem 'd3-rails'
+gem 'gon'
 
 group :doc do
   gem 'sdoc', '0.3.20', require: false

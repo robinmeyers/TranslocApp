@@ -11,11 +11,9 @@ class LibrariesController < ApplicationController
 
   def show
     @library = Library.find(params[:id])
-    @junctions = @library.junctions
-    respond_to do |format|
-      format.html
-      format.json { render json: @junctions, only: [:rname, :junction, :strand] }
-    end
+    @junctions_count = @library.junctions.count
+    gon.library_id = params[:id]
+    gon.library = @library
   end 
 
   def create
