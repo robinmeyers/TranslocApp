@@ -21,7 +21,7 @@ var initViz = function() {
       .attr("height", function(d) {
         return h * d; 
       })
-      .attr("fill",function(d) {return "rgb(0,0,"+d*255+")"});
+      .attr("fill",function(d) {return "rgb(0,0,"+Math.floor(d*255)+")"});
 };
 
 
