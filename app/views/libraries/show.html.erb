@@ -34,7 +34,15 @@
     </div>
     <div id="junction-viewer" class="tab-pane active">
       <h3>A full javascript app? No way!</h3>
-      <div id="transloc-viz"></div>
+      <div id="transloc-viz">
+        <form class="form-inline" id="control-bar">
+          <span>Region: </span>
+          <%= select :chr, "Chromosome", options_for_select({"chr1"=>"1","chr2"=>"2","chr3"=>"3"},1), {include_blank: true}, onchange: "console.log('I have been changed')", class: "input-small"%>
+          <%= number_field_tag :start, 0, class: "span2" %>
+          <span> - </span>
+          <%= number_field_tag :end, 0, class: "span2" %>
+        </div>
+      </form>
     </div>
 
 

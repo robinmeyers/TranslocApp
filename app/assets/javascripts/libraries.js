@@ -21,7 +21,8 @@ function drawChromosome(svg,chrObj) {
       .datum(chrObj.for.histdata)
       .attr({ d: chrObj.for.line,
               fill: "none",
-              stroke: "steelblue"});
+              stroke: "steelblue",
+              'stroke-width': 2});
   chrObj.rev.line = d3.svg.line()
     .x(function(d) { return chrObj.xScale(d.x); })
     .y(function(d) { return chrObj.rev.yScale(d.y); });
@@ -29,7 +30,8 @@ function drawChromosome(svg,chrObj) {
     .datum(chrObj.rev.histdata)
     .attr({ d: chrObj.rev.line,
             fill: "none",
-            stroke: "firebrick"});
+            stroke: "firebrick",
+            'stroke-width': 2});
 
   svg.append("g")
     .attr("class", "axis")
