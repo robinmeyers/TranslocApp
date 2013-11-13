@@ -11,7 +11,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131107154314) do
+ActiveRecord::Schema.define(version: 20131112231642) do
+
+  create_table "assemblies", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "chromosomes", force: true do |t|
+    t.string   "name"
+    t.integer  "assembly_id"
+    t.integer  "size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "cytobands", force: true do |t|
+    t.string   "name"
+    t.integer  "assembly_id"
+    t.string   "chrom"
+    t.integer  "start"
+    t.integer  "end"
+    t.string   "stain"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "junctions", force: true do |t|
     t.string   "qname"
