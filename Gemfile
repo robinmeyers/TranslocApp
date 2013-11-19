@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '2.0.0'
 #ruby-gemset=translocapp
 
-gem 'rails', '4.0.0'
+gem 'rails', '4.0.1'
 gem 'bootstrap-sass', '2.3.2.0'
 gem 'bcrypt-ruby', '3.0.1'
 gem 'faker', '1.1.2'
@@ -11,6 +11,7 @@ gem 'bootstrap-will_paginate', '0.0.9'
 gem 'rails_config'
 
 group :development, :test do
+  gem 'mysql2'
   gem 'sqlite3', '1.3.7'
   gem 'rspec-rails', '2.13.1'
   gem 'spork-rails', github: 'sporkrb/spork-rails'
@@ -41,5 +42,6 @@ end
 
 group :production do
   gem 'pg', '0.15.1'
+  gem 'mysql2'
   gem 'rails_12factor', '0.0.2'
 end
