@@ -1,5 +1,8 @@
 var plot;
 var hist;
+var junctions;
+var tmpgraph;
+
 TranslocPlot = function(elemid,junctions,options) {
   var self = this;
   this.chart = document.getElementById(elemid);
@@ -51,10 +54,10 @@ TranslocPlot = function(elemid,junctions,options) {
 
 
   
-  this.options.ymin = options.ymin || 0;
-  this.options.ymax = options.ymax || 20;
- 
-
+  this.options.ymin = 0;
+  this.options.ymax = d3.max(this.top.hist.concat(this.bot.hist),function(b){return b.y;});
+  this.options.ymax = d3.max([this.options.ymax,5]) 
+  console.log(this.options.ymax);
 
 
 
@@ -78,17 +81,18 @@ TranslocPlot = function(elemid,junctions,options) {
   this.dragged = this.selected = null;
 
   this.top.line = d3.svg.line()
-      .x(function(d,i) { return this.x(this.top.points[i].x); })
-      .y(function(d,i) { return this.top.y(this.top.points[i].y); });
+      .x(function(d) { return self.x(d.x); })
+      .y(function(d) { return self.top.y(d.y); });
+
+
 
   this.bot.line = d3.svg.line()
-      .x(function(d,i) { return this.x(this.bot.points[i].x); })
-      .y(function(d,i) { return this.bot.y(this.bot.points[i].y); });
+      .x(function(d) { return self.x(d.x); })
+      .y(function(d) { return self.bot.y(d.y); });
 
-  this.top.points = this.top.hist.map(function(d) {return {x: d.x, y: d.y};});
-  this.bot.points = this.bot.hist.map(function(d) {return {x: d.x, y: d.y};});
-    console.log(this.top.points);
-  console.log(this.bot.points);
+
+
+  tmpgraph = this;
 
   this.vis = d3.select(this.chart).append("svg")
       .attr("width",  this.cx)
@@ -115,14 +119,55 @@ TranslocPlot = function(elemid,junctions,options) {
       //.on("touchstart.drag", self.plot_drag())
       //this.plot.call(d3.behavior.zoom().x(this.x).y(this.y).on("zoom", this.redraw()));
 
+  this.vis.append("rect")
+          .attr("y", this.top.y(0))
+          .attr("height", this.options.chrthickness)
+          .attr("width",this.size.width)
+          .attr("fill", "none")
+          .attr("stroke", "black");
+
   this.vis.append("path")
           .attr("class", "line")
-          //.attr("color", "steelblue")
-          .attr("d", this.top.line(this.top.points));
+          .attr("stroke", "steelblue")
+          .attr("fill", "none")
+          .attr("stroke-width", 2)          
+          .attr("d", this.top.line(this.top.hist));
   this.vis.append("path")
           .attr("class", "line")
-          //.attr("color", "brickred")
-          .attr("d", this.bot.line(this.bot.points));
+          .attr("stroke", "firebrick")
+          .attr("fill", "none")
+          .attr("stroke-width", 2)
+          .attr("d", this.bot.line(this.bot.hist));
+
+  this.xAxis = d3.svg.axis()
+                  .scale(this.x)
+                  .orient("top")
+                  .ticks(4);
+  this.top.yAxis = d3.svg.axis()
+                      .scale(this.top.y)
+                      .orient("left")
+                      .ticks(5)
+  this.bot.yAxis = d3.svg.axis()
+                      .scale(this.bot.y)
+                      .orient("left")
+                      .ticks(5)
+
+  this.vis.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(0,-5)")
+    .call(this.xAxis)
+    // .append("text")
+    // .text(d3.format(".2s")(chrObj.end - chrObj.start + 1))
+    // .attr("x",chrObj.xScale((chrObj.end + chrObj.start)/2))
+    // .attr("y",chrObj.for.yScale(chrObj.maxY)-5);
+  this.vis.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(-5,0)")
+    .call(this.top.yAxis);
+  this.vis.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(-5,0)")
+    .call(this.bot.yAxis);
 };
 
 
