@@ -105,6 +105,8 @@ TranslocPlot = function(elemid,junctions,options) {
       .append("g")
         .attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")");
 
+
+
   this.top.plot = this.vis.append("rect")
       .attr("width", this.size.width)
       .attr("height", (this.size.height-this.options.chrthickness)/2)
@@ -113,6 +115,7 @@ TranslocPlot = function(elemid,junctions,options) {
       .on("mousedown.drag", self.plot_drag())
       //.on("touchstart.drag", self.plot_drag())
       this.top.plot.call(d3.behavior.zoom().x(this.x).on("zoom", this.redraw()));
+
 
   this.bot.plot = this.vis.append("rect")
       .attr("y", this.bot.y(0))
@@ -123,6 +126,7 @@ TranslocPlot = function(elemid,junctions,options) {
       .on("mousedown.drag", self.plot_drag())
       //.on("touchstart.drag", self.plot_drag())
       this.bot.plot.call(d3.behavior.zoom().x(this.x).on("zoom", this.redraw()));
+
 
   this.vis.append("rect")
           .attr("y", this.top.y(0))
@@ -225,7 +229,7 @@ TranslocPlot.prototype.update = function() {
 TranslocPlot.prototype.mousemove = function() {
   var self = this;
   return function() {
-    // var p = d3.svg.mouse(self.vis[0][0]),
+    var p = d3.mouse(self.vis[0][0]);
         // t = d3.event.changedTouches;
     
     if (self.dragged) {
@@ -333,20 +337,20 @@ TranslocPlot.prototype.redraw = function() {
                         .orient("left")
                         .ticks(5);
 
-    self.vis.append("g")
-      .attr("class", "axis")
+    self.vis.select("g.x-axis")
+      .attr("class", "x-axis")
       .attr("transform", "translate(0,-5)")
       .call(self.xAxis)
       // .append("text")
       // .text(d3.format(".2s")(chrObj.end - chrObj.start + 1))
       // .attr("x",chrObj.xScale((chrObj.end + chrObj.start)/2))
       // .attr("y",chrObj.for.yScale(chrObj.maxY)-5);
-    self.vis.append("g")
-      .attr("class", "axis")
+    self.vis.select("g.y-axis-top")
+      .attr("class", "y-axis-top")
       .attr("transform", "translate(-5,0)")
       .call(self.top.yAxis);
-    self.vis.append("g")
-      .attr("class", "axis")
+    self.vis.select("g.y-axis-bot")
+      .attr("class", "y-axis-bot")
       .attr("transform", "translate(-5,0)")
       .call(self.bot.yAxis);
 

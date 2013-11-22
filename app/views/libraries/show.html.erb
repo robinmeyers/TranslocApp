@@ -33,7 +33,6 @@
       <h3>Put some Sequences here</h3>
     </div>
     <div id="junction-viewer" class="tab-pane active">
-
         <form class="form-inline" id="control-bar">
           <span>Region: </span>
           <%= select :chr, "Chromosome", options_for_select({"chr1"=>"1","chr2"=>"2","chr3"=>"3"},1), {include_blank: true}, onchange: "console.log('I have been changed')", class: "input-small"%>
@@ -41,12 +40,8 @@
           <span> - </span>
           <%= number_field_tag :end, 0, class: "span2" %>
           </form>
-
       <div id="transloc-viz" style="width:940px; height:500px">
       </div>
-
     </div>
-
-
   </div>
 </div>

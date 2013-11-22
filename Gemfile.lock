@@ -208,7 +208,7 @@ DEPENDENCIES
   faker (= 1.1.2)
   gon
   jbuilder (= 1.0.2)
-  jquery-rails (= 3.0.4)
+  jquery-rails
   jquery-turbolinks
   mysql2
   pg (= 0.15.1)
