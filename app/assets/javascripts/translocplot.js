@@ -15,7 +15,7 @@ TranslocPlot = function(elemid,junctions,options) {
   this.cy = this.chart.clientHeight;
   this.options = options || {};
   this.options.chrthickness = 10;
-  this.options.start = options.start || 1;
+  this.options.start = options.start || 0;
   this.options.end = options.end || 10000000;
 
   this.top = {};
@@ -112,8 +112,7 @@ TranslocPlot = function(elemid,junctions,options) {
       .attr("height", (this.size.height-this.options.chrthickness)/2)
       .style("fill", "#EEEEEE")
       .attr("pointer-events", "all")
-      .on("mousedown.drag", self.plot_drag())
-      //.on("touchstart.drag", self.plot_drag())
+      // .on("mousedown.drag", self.plot_drag())
       this.top.plot.call(d3.behavior.zoom().x(this.x).on("zoom", this.redraw()));
 
 
@@ -123,8 +122,7 @@ TranslocPlot = function(elemid,junctions,options) {
       .attr("height", (this.size.height-this.options.chrthickness)/2)
       .style("fill", "#EEEEEE")
       .attr("pointer-events", "all")
-      .on("mousedown.drag", self.plot_drag())
-      //.on("touchstart.drag", self.plot_drag())
+      // .on("mousedown.drag", self.plot_drag())
       this.bot.plot.call(d3.behavior.zoom().x(this.x).on("zoom", this.redraw()));
 
 
@@ -150,214 +148,170 @@ TranslocPlot = function(elemid,junctions,options) {
           .attr("stroke-width", 2)
           .attr("d", this.bot.line(this.bot.hist));
 
-  d3.select(this.chart)
-      .on("mousemove.drag", self.mousemove())
-      .on("mouseup.drag",   self.mouseup())
+  this.xAxis = d3.svg.axis()
+                  .scale(this.x)
+                  .orient("top")
+                  .ticks(4);
+  this.top.yAxis = d3.svg.axis()
+                      .scale(this.top.y)
+                      .orient("left")
+                      .ticks(5);
+  this.bot.yAxis = d3.svg.axis()
+                      .scale(this.bot.y)
+                      .orient("left")
+                      .ticks(5);
+  this.vis.append("g")
+    .attr("class","axis x")
+    .attr("transform", "translate(0,-5)")
+    .call(this.xAxis)
+    // .append("text")
+    // .text(d3.format(".2s")(chrObj.end - chrObj.start + 1))
+    // .attr("x",chrObj.xScale((chrObj.end + chrObj.start)/2))
+    // .attr("y",chrObj.for.yScale(chrObj.maxY)-5);
+  this.vis.append("g")
+    .attr("class", "axis top y")
+    .attr("transform", "translate(-5,0)")
+    .call(this.top.yAxis);
+  this.vis.append("g")
+    .attr("class","axis bot y")
+    .attr("transform", "translate(-5,0)")
+    .call(this.bot.yAxis);
+
+  // d3.select(this.chart)
+  //     .on("mousemove.drag", self.mousemove())
+  //     .on("mouseup.drag",   self.mouseup())
 
   this.redraw()();
 
  
 };
 
-TranslocPlot.prototype.plot_drag = function() {
-  var self = this;
-  return function() {
-    registerKeyboardHandler(self.keydown());
-    d3.select('body').style("cursor", "move");
-    // if (d3.event.altKey) {
-    //   var p = d3.svg.mouse(self.vis.node());
-    //   var newpoint = {};
-    //   newpoint.x = self.x.invert(Math.max(0, Math.min(self.size.width,  p[0])));
-    //   // newpoint.y = self.y.invert(Math.max(0, Math.min(self.size.height, p[1])));
-    //   self.points.push(newpoint);
-    //   self.points.sort(function(a, b) {
-    //     if (a.x < b.x) { return -1 };
-    //     if (a.x > b.x) { return  1 };
-    //     return 0
-    //   });
-    //   self.selected = newpoint;
-    //   self.update();
-    //   d3.event.preventDefault();
-    //   d3.event.stopPropagation();
-    // }    
-  }
-};
+// TranslocPlot.prototype.plot_drag = function() {
+//   var self = this;
+//   return function() {
+//     registerKeyboardHandler(self.keydown());
+//     d3.select('body').style("cursor", "move");  
+//   }
+// };
 
-TranslocPlot.prototype.update = function() {
-  var self = this;
-  this.junctionsByStrand.filterAll();
-  this.top.hist = d3.layout.histogram()
-    .bins(this.x.ticks(100))
-    .value(function(j) {return j.junction})
-    (this.junctionsByStrand.filter("+").top(Infinity));
-  hist = this.top.hist;
-  this.junctionsByStrand.filterAll();
-  this.bot.hist = d3.layout.histogram()
-    .bins(this.x.ticks(100))
-    .value(function(j) {return j.junction})
-    (this.junctionsByStrand.filter("-").top(Infinity));
-  var toplines = this.vis.select("#toppath").attr("d", this.top.line(this.top.hist));
-  var botlines = this.vis.select("#botpath").attr("d", this.bot.line(this.bot.hist));
-        
-  // var circle = this.vis.select("svg").selectAll("circle")
-  //     .data(this.points, function(d) { return d; });
+// TranslocPlot.prototype.update = function() {
+//   var self = this;
+  
 
-  // circle.enter().append("circle")
-  //     .attr("class", function(d) { return d === self.selected ? "selected" : null; })
-  //     .attr("cx",    function(d) { return self.x(d.x); })
-  //     .attr("cy",    function(d) { return self.y(d.y); })
-  //     .attr("r", 10.0)
-  //     .style("cursor", "ns-resize")
-  //     .on("mousedown.drag",  self.datapoint_drag())
-  //     .on("touchstart.drag", self.datapoint_drag());
-
-  // circle
-  //     .attr("class", function(d) { return d === self.selected ? "selected" : null; })
-  //     .attr("cx",    function(d) { 
-  //       return self.x(d.x); })
-  //     .attr("cy",    function(d) { return self.y(d.y); });
-
-  // circle.exit().remove();
-
-  if (d3.event && d3.event.keyCode) {
-    d3.event.preventDefault();
-    d3.event.stopPropagation();
-  }
-}
+//   if (d3.event && d3.event.keyCode) {
+//     d3.event.preventDefault();
+//     d3.event.stopPropagation();
+//   }
+// }
 
 
-TranslocPlot.prototype.mousemove = function() {
-  var self = this;
-  return function() {
-    var p = d3.mouse(self.vis[0][0]);
-        // t = d3.event.changedTouches;
+// TranslocPlot.prototype.mousemove = function() {
+//   var self = this;
+//   return function() {
+//     var p = d3.mouse(self.vis[0][0]);
+//         // t = d3.event.changedTouches;
     
-    if (self.dragged) {
-      // self.dragged.y = self.y.invert(Math.max(0, Math.min(self.size.height, p[1])));
-      self.update();
-    };
-    if (!isNaN(self.downx)) {
-      d3.select('body').style("cursor", "ew-resize");
-      var rupx = self.x.invert(p[0]),
-          xaxis1 = self.x.domain()[0],
-          xaxis2 = self.x.domain()[1],
-          xextent = xaxis2 - xaxis1;
-      if (rupx != 0) {
-        var changex, new_domain;
-        changex = self.downx / rupx;
-        new_domain = [xaxis1, xaxis1 + (xextent * changex)];
-        self.x.domain(new_domain);
-        self.redraw()();
-      }
-      d3.event.preventDefault();
-      d3.event.stopPropagation();
-    };
-    // if (!isNaN(self.downy)) {
-    //   d3.select('body').style("cursor", "ns-resize");
-    //   var rupy = self.y.invert(p[1]),
-    //       yaxis1 = self.y.domain()[1],
-    //       yaxis2 = self.y.domain()[0],
-    //       yextent = yaxis2 - yaxis1;
-    //   if (rupy != 0) {
-    //     var changey, new_domain;
-    //     changey = self.downy / rupy;
-    //     new_domain = [yaxis1 + (yextent * changey), yaxis1];
-    //     self.y.domain(new_domain);
-    //     self.redraw()();
-    //   }
-    //   d3.event.preventDefault();
-    //   d3.event.stopPropagation();
-    // }
-  }
-};
+//     if (self.dragged) {
+//       self.update();
+//     };
+//     if (!isNaN(self.downx)) {
+//       d3.select('body').style("cursor", "ew-resize");
+//       var rupx = self.x.invert(p[0]),
+//           xaxis1 = self.x.domain()[0],
+//           xaxis2 = self.x.domain()[1],
+//           xextent = xaxis2 - xaxis1;
+//       if (rupx != 0) {
+//         var changex, new_domain;
+//         changex = self.downx / rupx;
+//         new_domain = [xaxis1, xaxis1 + (xextent * changex)];
+//         self.x.domain(new_domain);
+//         self.redraw()();
+//       }
+//       d3.event.preventDefault();
+//       d3.event.stopPropagation();
+//     };
+//   }
+// };
 
-TranslocPlot.prototype.mouseup = function() {
-  var self = this;
-  return function() {
-    document.onselectstart = function() { return true; };
-    d3.select('body').style("cursor", "auto");
-    d3.select('body').style("cursor", "auto");
-    if (!isNaN(self.downx)) {
-      self.redraw()();
-      self.downx = Math.NaN;
-      d3.event.preventDefault();
-      d3.event.stopPropagation();
-    };
-    // if (!isNaN(self.downy)) {
-    //   self.redraw()();
-    //   self.downy = Math.NaN;
-    //   d3.event.preventDefault();
-    //   d3.event.stopPropagation();
-    // }
-    if (self.dragged) { 
-      self.dragged = null 
-    }
-  }
-}
+// TranslocPlot.prototype.mouseup = function() {
+//   var self = this;
+//   return function() {
+//     document.onselectstart = function() { return true; };
+//     d3.select('body').style("cursor", "auto");
+//     d3.select('body').style("cursor", "auto");
+//     if (!isNaN(self.downx)) {
+//       self.redraw()();
+//       self.downx = Math.NaN;
+//       d3.event.preventDefault();
+//       d3.event.stopPropagation();
+//     };
+//     if (self.dragged) { 
+//       self.dragged = null 
+//     }
+//   }
+// }
 
-TranslocPlot.prototype.keydown = function() {
-  var self = this;
-  return function() {
-    if (!self.selected) return;
-    // switch (d3.event.keyCode) {
-    //   case 8: // backspace
-    //   case 46: { // delete
-    //     var i = self.points.indexOf(self.selected);
-    //     self.points.splice(i, 1);
-    //     self.selected = self.points.length ? self.points[i > 0 ? i - 1 : 0] : null;
-    //     self.update();
-    //     break;
-    //   }
-    // }
-  }
-};
+// TranslocPlot.prototype.keydown = function() {
+//   var self = this;
+//   return function() {
+//     if (!self.selected) return;
+
+//   }
+// };
 
 TranslocPlot.prototype.redraw = function() {
   var self = this;
   return function() {
-    var tx = function(d) { 
-      return "translate(" + self.x(d) + ",0)"; 
-    },
-    ty = function(d) { 
-      return "translate(0," + self.y(d) + ")";
-    },
-    stroke = function(d) { 
-      return d ? "#ccc" : "#666"; 
-    };
-    self.xAxis = d3.svg.axis()
-                  .scale(self.x)
-                  .orient("top")
-                  .ticks(4);
-    self.top.yAxis = d3.svg.axis()
-                        .scale(self.top.y)
-                        .orient("left")
-                        .ticks(5);
-    self.bot.yAxis = d3.svg.axis()
-                        .scale(self.bot.y)
-                        .orient("left")
-                        .ticks(5);
+    
+    self.x.domain([d3.max([0,self.x.domain()[0]]), d3.min([10000000,self.x.domain()[1]])]);
 
-    self.vis.select("g.x-axis")
-      .attr("class", "x-axis")
-      .attr("transform", "translate(0,-5)")
+    self.vis.select("g.axis.x")
       .call(self.xAxis)
-      // .append("text")
-      // .text(d3.format(".2s")(chrObj.end - chrObj.start + 1))
-      // .attr("x",chrObj.xScale((chrObj.end + chrObj.start)/2))
-      // .attr("y",chrObj.for.yScale(chrObj.maxY)-5);
-    self.vis.select("g.y-axis-top")
-      .attr("class", "y-axis-top")
-      .attr("transform", "translate(-5,0)")
+
+    self.vis.select("g.axis.top.y")
       .call(self.top.yAxis);
-    self.vis.select("g.y-axis-bot")
-      .attr("class", "y-axis-bot")
-      .attr("transform", "translate(-5,0)")
+
+    var histbins = self.x.ticks(100);
+
+    self.junctionsByStrand.filterAll();
+    self.top.hist = d3.layout.histogram()
+      .bins(histbins)
+      .value(function(j) {return j.junction})
+      .range([histbins[0],histbins[histbins.length-1]])
+      (self.junctionsByStrand.filter("+").top(Infinity));
+    hist = self.top.hist;
+    self.junctionsByStrand.filterAll();
+    self.bot.hist = d3.layout.histogram()
+      .bins(histbins)
+      .value(function(j) {return j.junction})
+      .range([histbins[0],histbins[histbins.length-1]])
+      (self.junctionsByStrand.filter("-").top(Infinity));
+    
+    self.options.ymax = d3.max(self.top.hist.concat(self.bot.hist),function(b){return b.y;});
+    self.options.ymax = d3.max([self.options.ymax,5])
+
+    self.top.y.domain([self.options.ymax,self.options.ymin]);
+    self.bot.y.domain([self.options.ymin,self.options.ymax]);
+
+
+    self.vis.select("g.axis.bot.y")
       .call(self.bot.yAxis);
 
-    
-    self.top.plot.call(d3.behavior.zoom().x(self.x).on("zoom", self.redraw()));
-    self.bot.plot.call(d3.behavior.zoom().x(self.x).on("zoom", self.redraw()));
-    self.update();    
+    var toplines = self.vis.select("#toppath")
+                      .attr("d", self.top.line(self.top.hist));
+    var botlines = self.vis.select("#botpath")
+                      .attr("d", self.bot.line(self.bot.hist));
+
+    var histrange = d3.max(histbins)-d3.min(histbins);
+
+    self.top.plot.call(d3.behavior.zoom()
+            .scaleExtent([0,histrange/100])
+            .x(self.x)
+            .on("zoom", self.redraw()));
+    self.bot.plot.call(d3.behavior.zoom()
+            .scaleExtent([0,histrange/100])
+            .x(self.x)
+            .on("zoom", self.redraw()));
   }  
 }
 
