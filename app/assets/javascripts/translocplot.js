@@ -181,6 +181,17 @@ TranslocPlot.prototype.plot_drag = function() {
 
 TranslocPlot.prototype.update = function() {
   var self = this;
+  this.junctionsByStrand.filterAll();
+  this.top.hist = d3.layout.histogram()
+    .bins(this.x.ticks(100))
+    .value(function(j) {return j.junction})
+    (this.junctionsByStrand.filter("+").top(Infinity));
+  hist = this.top.hist;
+  this.junctionsByStrand.filterAll();
+  this.bot.hist = d3.layout.histogram()
+    .bins(this.x.ticks(100))
+    .value(function(j) {return j.junction})
+    (this.junctionsByStrand.filter("-").top(Infinity));
   var toplines = this.vis.select("#toppath").attr("d", this.top.line(this.top.hist));
   var botlines = this.vis.select("#botpath").attr("d", this.bot.line(this.bot.hist));
         
