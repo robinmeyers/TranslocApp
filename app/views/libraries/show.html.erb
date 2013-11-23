@@ -10,7 +10,7 @@
     <li><a href="#junction-sequences" data-toggle="tab">Sequences</a></li>
     <li class="active"><a href="#junction-viewer" data-toggle="tab">Viewer</a></li>
   </ul>
-  <div class="tab-content">  
+  <div class="tab-content" style="overflow: visible">  
     <div id="junction-table" class="tab-pane">
       <div class="span6 offset3">
       
@@ -36,9 +36,9 @@
         <form class="form-inline" id="control-bar">
           <span>Region: </span>
           <%= select :chr, "Chromosome", options_for_select({"chr1"=>"1","chr2"=>"2","chr3"=>"3"},1), {include_blank: true}, onchange: "console.log('I have been changed')", class: "input-small"%>
-          <%= number_field_tag :start, 0, class: "span2" %>
+          <%= number_field_tag :start, 0, id: "startfield", class: "span2" %>
           <span> - </span>
-          <%= number_field_tag :end, 0, class: "span2" %>
+          <%= number_field_tag :end, 10000000, id: "endfield", class: "span2" %>
           </form>
       <div id="transloc-viz" style="width:940px; height:500px">
       </div>

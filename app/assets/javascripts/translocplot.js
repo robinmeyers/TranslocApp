@@ -8,6 +8,11 @@ registerKeyboardHandler = function(callback) {
   d3.select(window).on("keydown", callback);  
 };
 
+formatBasePairs = function(bp) {
+  var prefix = d3.formatPrefix(bp);
+  return prefix.scale(bp).toString() + prefix.symbol + (prefix.symbol == "" ? "bp" : "b");
+}
+
 TranslocPlot = function(elemid,junctions,options) {
   var self = this;
   this.chart = document.getElementById(elemid);
@@ -36,7 +41,21 @@ TranslocPlot = function(elemid,junctions,options) {
   // x-scale
   this.x = d3.scale.linear()
       .domain([this.options.start, this.options.end])
-      .range([0, this.size.width]);
+      .nice()
+      .range([0, this.size.width])
+      .nice();
+
+  this.startclamp = d3.scale.linear()
+          .domain([0,10000000-100])
+          .range([0,10000000-100])
+          .clamp(true);
+  this.endclamp = d3.scale.linear()
+          .domain([100,10000000])
+          .range([100,10000000])
+          .clamp(true);
+
+  var histbins = self.x.ticks(100);
+
 
   // drag x-axis logic
   this.downx = Math.NaN;
@@ -45,14 +64,17 @@ TranslocPlot = function(elemid,junctions,options) {
   this.junctionsByChr = this.cf.dimension(function(j) { return j.rname; });
   this.junctionsByStrand = this.cf.dimension(function(j) { return j.strand; });
 
+
+
+
   this.top.hist = d3.layout.histogram()
-    .bins(this.x.ticks(100))
+    .bins(histbins)
     .value(function(j) {return j.junction})
     (this.junctionsByStrand.filter("+").top(Infinity));
   hist = this.top.hist;
   this.junctionsByStrand.filterAll();
   this.bot.hist = d3.layout.histogram()
-    .bins(this.x.ticks(100))
+    .bins(histbins)
     .value(function(j) {return j.junction})
     (this.junctionsByStrand.filter("-").top(Infinity));
 
@@ -151,7 +173,7 @@ TranslocPlot = function(elemid,junctions,options) {
   this.xAxis = d3.svg.axis()
                   .scale(this.x)
                   .orient("top")
-                  .ticks(4);
+                  .ticks(6);
   this.top.yAxis = d3.svg.axis()
                       .scale(this.top.y)
                       .orient("left")
@@ -176,6 +198,14 @@ TranslocPlot = function(elemid,junctions,options) {
     .attr("class","axis bot y")
     .attr("transform", "translate(-5,0)")
     .call(this.bot.yAxis);
+
+  this.vis.append("text")
+          .text(formatBasePairs(histbins[1]-histbins[0])+" bins")
+          .attr("id","binsize")
+          .attr("x",this.size.width)
+          .attr("y",0)
+          .attr("dy","1em")
+          .attr("text-anchor","end")
 
   // d3.select(this.chart)
   //     .on("mousemove.drag", self.mousemove())
@@ -262,14 +292,20 @@ TranslocPlot = function(elemid,junctions,options) {
 TranslocPlot.prototype.redraw = function() {
   var self = this;
   return function() {
+
+    var newxstart = d3.round(self.startclamp(self.x.domain()[0])),
+        newxend = d3.round(self.endclamp(self.x.domain()[1]));
     
-    self.x.domain([d3.max([0,self.x.domain()[0]]), d3.min([10000000,self.x.domain()[1]])]);
+    self.x.domain([ newxstart, newxend ]);
+
+    d3.select("#startfield")
+      .attr("value",self.x.domain()[0]);
+    d3.select("#endfield")
+      .attr("value",self.x.domain()[1]);
 
     self.vis.select("g.axis.x")
       .call(self.xAxis)
 
-    self.vis.select("g.axis.top.y")
-      .call(self.top.yAxis);
 
     var histbins = self.x.ticks(100);
 
@@ -293,23 +329,28 @@ TranslocPlot.prototype.redraw = function() {
     self.top.y.domain([self.options.ymax,self.options.ymin]);
     self.bot.y.domain([self.options.ymin,self.options.ymax]);
 
+    self.vis.select("g.axis.top.y")
+      .call(self.top.yAxis);
 
     self.vis.select("g.axis.bot.y")
       .call(self.bot.yAxis);
+
+    self.vis.select("text#binsize")
+        .text(formatBasePairs(histbins[1]-histbins[0])+" bins");
 
     var toplines = self.vis.select("#toppath")
                       .attr("d", self.top.line(self.top.hist));
     var botlines = self.vis.select("#botpath")
                       .attr("d", self.bot.line(self.bot.hist));
 
-    var histrange = d3.max(histbins)-d3.min(histbins);
+    var xrange = self.x.domain()[1]-self.x.domain()[0];
 
     self.top.plot.call(d3.behavior.zoom()
-            .scaleExtent([0,histrange/100])
+            .scaleExtent([0,xrange/100])
             .x(self.x)
             .on("zoom", self.redraw()));
     self.bot.plot.call(d3.behavior.zoom()
-            .scaleExtent([0,histrange/100])
+            .scaleExtent([0,xrange/100])
             .x(self.x)
             .on("zoom", self.redraw()));
   }  
