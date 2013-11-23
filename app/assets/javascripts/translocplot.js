@@ -173,7 +173,8 @@ TranslocPlot = function(elemid,junctions,options) {
   this.xAxis = d3.svg.axis()
                   .scale(this.x)
                   .orient("top")
-                  .ticks(6);
+                  .outerTickSize(0)
+                  .ticks(8);
   this.top.yAxis = d3.svg.axis()
                       .scale(this.top.y)
                       .orient("left")
