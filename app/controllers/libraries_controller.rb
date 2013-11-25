@@ -12,8 +12,11 @@ class LibrariesController < ApplicationController
   def show
     @library = Library.find(params[:id])
     @junctions_count = @library.junctions.count
-    gon.library_id = params[:id]
     gon.library = @library
+    @assembly = Assembly.find_by(name: @library.assembly)
+    @chromosomes = @assembly.chromosomes
+    gon.chromosomes = @chromosomes
+    gon.cytobands = @assembly.cytobands
   end 
 
   def create

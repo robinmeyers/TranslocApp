@@ -35,7 +35,7 @@
     <div id="junction-viewer" class="tab-pane active">
         <form class="form-inline" id="control-bar">
           <span>Region: </span>
-          <%= select :chr, "Chromosome", options_for_select({"chr1"=>"1","chr2"=>"2","chr3"=>"3"},1), {include_blank: true}, onchange: "console.log('I have been changed')", class: "input-small"%>
+          <%= select :chr, "Chromosome", options_for_select(@chromosomes.map{ |chr| chr.name } ,@library.brkchr), {include_blank: true}, onchange: "console.log('I have been changed')", class: "input-small", id: "chrfield"%>
           <%= number_field_tag :start, 0, id: "startfield", class: "span2" %>
           <span> - </span>
           <%= number_field_tag :end, 10000000, id: "endfield", class: "span2" %>

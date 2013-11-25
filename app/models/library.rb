@@ -4,6 +4,8 @@ class Library < ActiveRecord::Base
   belongs_to :sequencing
   has_many :junctions, dependent: :destroy
 
+  attr_accessor :junction_count
+
   before_validation do
     format_attributes
     
@@ -34,7 +36,7 @@ class Library < ActiveRecord::Base
                   { in: ["mm9","hg19"], message: "is not a valid assembly" }
 
   validates :brkchr, presence: true, inclusion: 
-                  { in: ((1..22).to_a + ["X","Y"]).map { |a| a.to_s }, message: " is not a valid chromosome name" }
+                  { in: (((1..22).to_a + ["X","Y"]).map { |a| a.to_s }).map{ |c| "chr"+c }  , message: " is not a valid chromosome name" }
   validates :brkstrand, presence: true, inclusion: { in: ["+", "-"],
                                           message: "is not a valid strand" }
   validates :brkstart, presence: true, numericality: { only_integer: true, greater_than: 0,
@@ -61,7 +63,7 @@ class Library < ActiveRecord::Base
     if brkchr.is_a?(Numeric)
       self.brkchr = brkchr.to_i.to_s
     elsif brkchr.is_a?(String)      
-      self.brkchr = brkchr[/chr(\w+)/i,1] if brkchr[/chr(\w+)/i]
+      self.brkchr = "chr"+brkchr unless brkchr[/chr(\w+)/i]
     end
     if brkstrand.is_a?(Numeric)
       self.brkstrand = "+" if brkstrand == 1
