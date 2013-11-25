@@ -1,29 +1,47 @@
 <% provide(:title, @library.name) %>
-<% javascript 'libraries' %>
+<% javascript 'translocplot' %>
 <div class="row">
-  <aside class="span2">
-    <section>
-      <h1>
-        <%= @library.name %>
-      </h1>
-    </section>
-  </aside>
-  <div class="span10">
-    <h3>Junctions (<%= @junctions.count %>)</h3>
-    <% if @junctions.any? %>
+  <h1><%= @library.name %></h1>
+  <h3 class="center">Junctions (<%= @junctions_count %>)</h3>
+</div>
+<div class="container">
+  <ul class="nav nav-tabs">
+    <li><a href="#junction-table" data-toggle="tab">Table</a></li>
+    <li><a href="#junction-sequences" data-toggle="tab">Sequences</a></li>
+    <li class="active"><a href="#junction-viewer" data-toggle="tab">Viewer</a></li>
+  </ul>
+  <div class="tab-content" style="overflow: visible">  
+    <div id="junction-table" class="tab-pane">
+      <div class="span6 offset3">
       
-      <table class="table table-hover table-condensed">
-        <thead>
-          <tr>
-            <th>Rname</th>
-            <th>Junction</th>
-            <th>Strand</th>
-          </tr>
-        </thead>
-        <tbody>
-
-        </tbody>
-      </table>
-    <% end %>
+        <% if @junctions_count > 0 %>
+          
+          <table class="table table-hover table-condensed">
+            <thead>
+              <tr>
+                <th>Rname</th>
+                <th>Junction</th>
+                <th>Strand</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        <% end %>
+      </div>
+    </div>
+        <div id="junction-sequences" class="tab-pane">
+      <h3>Put some Sequences here</h3>
+    </div>
+    <div id="junction-viewer" class="tab-pane active">
+        <form class="form-inline" id="control-bar">
+          <span>Region: </span>
+          <%= select :chr, "Chromosome", options_for_select({"chr1"=>"1","chr2"=>"2","chr3"=>"3"},1), {include_blank: true}, onchange: "console.log('I have been changed')", class: "input-small"%>
+          <%= number_field_tag :start, 0, id: "startfield", class: "span2" %>
+          <span> - </span>
+          <%= number_field_tag :end, 10000000, id: "endfield", class: "span2" %>
+          </form>
+      <div id="transloc-viz" style="width:940px; height:500px">
+      </div>
+    </div>
   </div>
 </div>
