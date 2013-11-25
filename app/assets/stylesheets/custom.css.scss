@@ -246,3 +246,28 @@ input {
     font-family: sans-serif;
     font-size: 11px;
 }
+
+.axis.slider path {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 8px;
+  stroke-linecap: round;
+}
+
+/*.axis .halo {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 8px;
+  stroke-linecap: round;
+}*/
+
+.slider .handle {
+  fill: #fff;
+  stroke: #000;
+  stroke-opacity: .5;
+  stroke-width: 1.25px;
+  pointer-events: none;
+}

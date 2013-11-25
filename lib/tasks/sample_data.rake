@@ -1,6 +1,34 @@
 namespace :db do
   desc "Fill database with sample data"
   task populate: :environment do
+
+    require 'csv'
+    ["mm9","hg19"].each do |genome|
+
+      assembly = Assembly.create!(name: genome)
+
+      chr_opts = {headers: [:name, :size], col_sep: "\t"}
+      chr_file = Rails.root.join('data', 'assembly', genome, 'ChromInfo.txt')
+
+      CSV.foreach(chr_file, chr_opts) do |row|
+        assembly.chromosomes.create!(name: row[:name], size: row[:size])
+      end
+
+
+      cyto_file = Rails.root.join('data', 'assembly', genome, 'cytoBand.txt')
+      cyto_opts = {headers: [:chrom, :start, :end, :name, :stain], col_sep: "\t"}
+
+      CSV.foreach(cyto_file, cyto_opts) do |row|
+        assembly.cytobands.create!( name: row[:name],
+                                    chrom: row[:chrom],
+                                    start: row[:start],
+                                    end: row[:end],
+                                    stain: row[:stain] )
+      end
+
+
+    end
+
     Researcher.create!(name: "Robin Meyers",
                  email: "robin.m.meyers@gmail.com",
                  password: "foobar",
@@ -20,7 +48,7 @@ namespace :db do
                    password_confirmation: password)
   
     end
-    (1..50).each do |n|
+    (35..50).each do |n|
       run = "Alt%03d" % n
       completed_on = (50-n).weeks.ago
       Sequencing.create!(run: run, completed_on: completed_on)
@@ -28,15 +56,15 @@ namespace :db do
 
     
 
-    Researcher.first(6).each do |researcher|
+    Researcher.first(4).each do |researcher|
       sequencing_offset = 0
-      (1..8).to_a.reverse.each do |n|
+      (1..2).to_a.reverse.each do |n|
         sequencing_offset += rand(3)
         sequencing = Sequencing.offset(sequencing_offset).first
         name = researcher.name.scan(/[A-Z]/).join + "%03d" % n
         description = Faker::Lorem.sentence(5)
         assembly = ["mm9","hg19"].sample
-        brkchr = ((1..22).to_a + ["X","Y"]).sample
+        brkchr = "chr" + ((1..22).to_a + ["X","Y"]).sample.to_s
         brkstart = rand(100000000)
         brkend = brkstart + rand(500)
         brkstrand = ["+","-"].sample
@@ -58,8 +86,8 @@ namespace :db do
                                        adapter: adapter,
                                        breaksite: breaksite,
                                        cutter: cutter)
-        rand(1000).times do |n|
-          library.junctions.create!(rname: ((1..22).to_a + ["X","Y"]).sample,
+        rand(5000).times do |n|
+          library.junctions.create!(rname: "chr" + ((1..22).to_a + ["X","Y"]).sample.to_s,
                                     junction: rand(10000000),
                                     strand: ["+","-"].sample)
         end

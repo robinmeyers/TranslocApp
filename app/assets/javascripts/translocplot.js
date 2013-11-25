@@ -200,6 +200,53 @@ TranslocPlot = function(elemid,junctions,options) {
     .attr("transform", "translate(-5,0)")
     .call(this.bot.yAxis);
 
+  this.sliderscale = d3.scale.linear()
+                      .domain([5,self.options.ymax])
+                      .nice()
+                      .range([self.top.y.range()[0]+20,self.top.y.range()[1]-20])
+                      .nice()
+                      .clamp(true);
+
+  this.brush = d3.svg.brush()
+    .y(self.sliderscale)
+    .extent([self.options.ymax,self.options.ymax])
+    .on("brush", self.brushed());
+
+  this.vis.append("g")
+    .attr("class", "slider axis")
+    .attr("transform", "translate(" + (self.size.width + 10) +  ",0)")
+    .call(d3.svg.axis()
+      .scale(self.sliderscale)
+      .orient("right")
+      .ticks(0)
+      .outerTickSize(0));
+    // .select(".domain")
+    //   .attr("class", "domain slider")
+    // .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+      // .attr("class", "halo");;
+
+  this.slider = this.vis.append("g")
+    .attr("transform", "translate(" + (self.size.width + 10) +  ",0)")
+    .attr("class", "slider")
+    .call(self.brush);
+
+  this.slider.selectAll(".extent,.resize")
+    .remove();
+
+  var bg = this.slider.select(".background");
+
+  bg
+    .attr("x",-10)
+    .attr("width",20)
+    .attr("y",Number(bg.attr("y"))-5)
+    .attr("height",Number(bg.attr("height"))+10);
+
+  this.handle = this.slider.append("circle")
+    .attr("class", "handle")
+    .attr("cy", self.sliderscale(self.options.ymax))
+    .attr("r", 6);
+
+  
   this.vis.append("text")
           .text(formatBasePairs(histbins[1]-histbins[0])+" bins")
           .attr("id","binsize")
@@ -208,14 +255,17 @@ TranslocPlot = function(elemid,junctions,options) {
           .attr("dy","1em")
           .attr("text-anchor","end")
 
+  
   // d3.select(this.chart)
   //     .on("mousemove.drag", self.mousemove())
   //     .on("mouseup.drag",   self.mouseup())
 
-  this.redraw()();
+  this.redraw();
 
  
 };
+
+
 
 // TranslocPlot.prototype.plot_drag = function() {
 //   var self = this;
@@ -290,7 +340,21 @@ TranslocPlot = function(elemid,junctions,options) {
 //   }
 // };
 
-TranslocPlot.prototype.redraw = function() {
+TranslocPlot.prototype.brushed = function() {
+  var self = this;
+  return function() {
+    var value = self.brush.extent()[0];
+    if (d3.event.sourceEvent) { // not a programmatic event
+      value = self.sliderscale.invert(d3.mouse(this)[1]);
+      self.brush.extent([value, value]);
+    }
+
+    self.handle.attr("cy", self.sliderscale(value));
+    self.redraw(value)();
+  }
+}
+
+TranslocPlot.prototype.redraw = function(ymax) {
   var self = this;
   return function() {
 
@@ -300,9 +364,9 @@ TranslocPlot.prototype.redraw = function() {
     self.x.domain([ newxstart, newxend ]);
 
     d3.select("#startfield")
-      .attr("value",self.x.domain()[0]);
+      .property("value",self.x.domain()[0]);
     d3.select("#endfield")
-      .attr("value",self.x.domain()[1]);
+      .property("value",self.x.domain()[1]);
 
     self.vis.select("g.axis.x")
       .call(self.xAxis)
@@ -327,8 +391,8 @@ TranslocPlot.prototype.redraw = function() {
     self.options.ymax = d3.max(self.top.hist.concat(self.bot.hist),function(b){return b.y;});
     self.options.ymax = d3.max([self.options.ymax,5])
 
-    self.top.y.domain([self.options.ymax,self.options.ymin]);
-    self.bot.y.domain([self.options.ymin,self.options.ymax]);
+    self.top.y.domain([ymax || self.options.ymax, self.options.ymin]);
+    self.bot.y.domain([self.options.ymin, ymax || self.options.ymax]);
 
     self.vis.select("g.axis.top.y")
       .call(self.top.yAxis);
@@ -354,8 +418,16 @@ TranslocPlot.prototype.redraw = function() {
             .scaleExtent([0,xrange/100])
             .x(self.x)
             .on("zoom", self.redraw()));
+
+    self.sliderscale.domain([5,self.options.ymax]);
+
+    // self.handle.attr("cy", self.sliderscale(ymax || self.options.ymax));
+
+
   }  
 }
+
+
 
 $(document).ready(function() {
   d3.json("/get_junctions/?library_id="+gon.library.id, function(error, json) {
