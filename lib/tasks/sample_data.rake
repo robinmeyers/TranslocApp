@@ -28,7 +28,7 @@ namespace :db do
 
     
 
-    Researcher.all(limit: 6).each do |researcher|
+    Researcher.first(6).each do |researcher|
       sequencing_offset = 0
       (1..8).to_a.reverse.each do |n|
         sequencing_offset += rand(3)

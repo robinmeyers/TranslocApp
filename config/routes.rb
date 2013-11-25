@@ -7,6 +7,7 @@ TranslocApp::Application.routes.draw do
   resources :libraries
   resources :library_imports, only: [:new, :create]
   root  'static_pages#home'
+  match '/get_junctions', to: 'junctions#get_junctions', via: 'get'
   match '/signup',  to: 'researchers#new',      via: 'get'
   match '/signin',  to: 'sessions#new',         via: 'get'
   match '/signout', to: 'sessions#destroy',     via: 'delete'

@@ -15,3 +15,5 @@
 //= require jquery.turbolinks
 //= require bootstrap
 //= require turbolinks
+//= require d3
+//= require crossfilter
