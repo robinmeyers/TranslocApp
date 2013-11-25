@@ -27,7 +27,7 @@ namespace :db do
                                     chrom: row[:chrom],
                                     start: row[:start],
                                     end: row[:end],
-                                    stain: row[:end] )
+                                    stain: row[:stain] )
       end
 
 
