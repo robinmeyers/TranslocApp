@@ -3,6 +3,9 @@ namespace :db do
   task populate: :environment do
 
     require 'csv'
+    require 'rubystats'
+
+
     ["mm9","hg19"].each do |genome|
 
       assembly = Assembly.create!(name: genome)
@@ -64,8 +67,9 @@ namespace :db do
         name = researcher.name.scan(/[A-Z]/).join + "%03d" % n
         description = Faker::Lorem.sentence(5)
         assembly = ["mm9","hg19"].sample
-        brkchr = "chr" + ((1..22).to_a + ["X","Y"]).sample.to_s
-        brkstart = rand(100000000)
+        chromosomes = Assembly.find_by(name: assembly).chromosomes
+        brkchr = chromosomes.sample
+        brkstart = rand(brkchr.size)+1
         brkend = brkstart + rand(500)
         brkstrand = ["+","-"].sample
         mid = ["A","C","G","T"].values_at(*Array.new(rand(10)){rand(4)}).join
@@ -77,7 +81,7 @@ namespace :db do
                                        name: name,
                                        description: description,
                                        assembly: assembly,
-                                       brkchr: brkchr,
+                                       brkchr: brkchr.name,
                                        brkstart: brkstart,
                                        brkend: brkend,
                                        brkstrand: brkstrand,
@@ -86,11 +90,24 @@ namespace :db do
                                        adapter: adapter,
                                        breaksite: breaksite,
                                        cutter: cutter)
-        rand(5000).times do |n|
-          library.junctions.create!(rname: "chr" + ((1..22).to_a + ["X","Y"]).sample.to_s,
-                                    junction: rand(10000000),
-                                    strand: ["+","-"].sample)
+        junctions = []
+        gen = Rubystats::NormalDistribution.new(brkstart, 25000)
+        rand(10000).times do |n|
+          r = rand(2)
+          if r > 0
+            chr = brkchr
+            junction = gen.rng
+            junction = rand(chr.size)+1 if (junction < 1 || junction > chr.size)
+            s = rand(4)
+            strand = s > 0 ? brkstrand : ["+","-"].sample
+          else
+            chr = chromosomes.sample
+            junction = rand(chr.size)+1
+            strand = ["+","-"].sample
+          end
+          junctions.push({rname: chr.name, junction: junction, strand: strand})
         end
+        library.junctions.create!(junctions)
       end
     end
   end

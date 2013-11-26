@@ -65,39 +65,30 @@ ChromosomePlot = function(elemid,data,options) {
   this.junctionsByStrand = this.cf.dimension(function(j) { return j.strand; });
 
 
-
-
-  this.top.hist = d3.layout.histogram()
-    .bins(histbins)
-    .value(function(j) {return j.junction})
-    (this.junctionsByStrand.filter("+").top(Infinity));
-  hist = this.top.hist;
-  this.junctionsByStrand.filterAll();
-  this.bot.hist = d3.layout.histogram()
-    .bins(histbins)
-    .value(function(j) {return j.junction})
-    (this.junctionsByStrand.filter("-").top(Infinity));
-
+  // this.top.hist = d3.layout.histogram()
+  //   .bins(histbins)
+  //   .value(function(j) {return j.junction})
+  //   (this.junctionsByStrand.filter("+").top(Infinity));
+  // hist = this.top.hist;
+  // this.junctionsByStrand.filterAll();
+  // this.bot.hist = d3.layout.histogram()
+  //   .bins(histbins)
+  //   .value(function(j) {return j.junction})
+  //   (this.junctionsByStrand.filter("-").top(Infinity));
 
 
   
-  this.options.ymin = 0;
-  this.options.ymax = d3.max(this.top.hist.concat(this.bot.hist),function(b){return b.y;});
-  this.options.ymax = d3.max([this.options.ymax,5]) 
-  console.log(this.options.ymax);
-
-
 
 
   // top y-scale (inverted domain)
   this.top.y = d3.scale.linear()
-      .domain([this.options.ymax, this.options.ymin])
+      .domain([5, 0])
       .nice()
       .range([0, (this.size.height-this.options.chrthickness)/2])
       .nice();
 
   this.bot.y = d3.scale.linear()
-      .domain([this.options.ymin, this.options.ymax])
+      .domain([0, 5])
       .nice()
       .range([(this.size.height+this.options.chrthickness)/2, this.size.height])
       .nice();
@@ -162,22 +153,24 @@ ChromosomePlot = function(elemid,data,options) {
           .attr("clip-path", "url(#chart-area)")
           .attr("stroke", "steelblue")
           .attr("fill", "none")
-          .attr("stroke-width", 2)          
-          .attr("d", this.top.line(this.top.hist));
+          .attr("stroke-width", 2);          
+          // .attr("d", this.top.line(this.top.hist));
+
   this.vis.append("path")
           .attr("id","botpath")
           .attr("class", "line")
           .attr("clip-path", "url(#chart-area)")
           .attr("stroke", "firebrick")
           .attr("fill", "none")
-          .attr("stroke-width", 2)
-          .attr("d", this.bot.line(this.bot.hist));
+          .attr("stroke-width", 2);
+          // .attr("d", this.bot.line(this.bot.hist));
 
   this.xAxis = d3.svg.axis()
                   .scale(this.x)
                   .orient("top")
                   .outerTickSize(0)
                   .ticks(8);
+
   this.top.yAxis = d3.svg.axis()
                       .scale(this.top.y)
                       .orient("left")
@@ -186,6 +179,8 @@ ChromosomePlot = function(elemid,data,options) {
                       .scale(this.bot.y)
                       .orient("left")
                       .ticks(5);
+
+
   this.vis.append("g")
     .attr("class","axis x")
     .attr("transform", "translate(0,-5)")
@@ -203,8 +198,8 @@ ChromosomePlot = function(elemid,data,options) {
     .attr("transform", "translate(-5,0)")
     .call(this.bot.yAxis);
 
-  this.sliderscale = d3.scale.linear()
-                      .domain([5,self.options.ymax])
+  this.sliderscale = d3.scale.log()
+                      .domain([5,5])
                       .nice()
                       .range([self.top.y.range()[0]+40,self.top.y.range()[1]-20])
                       .nice()
@@ -212,7 +207,7 @@ ChromosomePlot = function(elemid,data,options) {
 
   this.brush = d3.svg.brush()
     .y(self.sliderscale)
-    .extent([self.options.ymax,self.options.ymax])
+    .extent([5,5])
     .on("brush", self.brushed());
 
   this.vis.append("g")
@@ -222,7 +217,9 @@ ChromosomePlot = function(elemid,data,options) {
       .scale(self.sliderscale)
       .orient("right")
       .ticks(0)
-      .outerTickSize(0));
+      .tickFormat("")
+      .outerTickSize(0)
+      .tickSize(0));
     // .select(".domain")
     //   .attr("class", "domain slider")
     // .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
@@ -246,7 +243,7 @@ ChromosomePlot = function(elemid,data,options) {
 
   this.handle = this.slider.append("circle")
     .attr("class", "handle")
-    .attr("cy", self.sliderscale(self.options.ymax))
+    .attr("cy", self.sliderscale.range()[1])
     .attr("r", 6);
 
   
@@ -259,10 +256,6 @@ ChromosomePlot = function(elemid,data,options) {
           .attr("text-anchor","end")
 
   
-  // d3.select(this.chart)
-  //     .on("mousemove.drag", self.mousemove())
-  //     .on("mouseup.drag",   self.mouseup())
-
   this.redraw()();
 
  
@@ -286,7 +279,6 @@ ChromosomePlot.prototype.brushed = function() {
 ChromosomePlot.prototype.updateData = function() {
   var self = this;
   return function() {
-    console.log("updating data");
 
     var histbins = self.x.ticks(self.options.bins);
 
@@ -312,7 +304,6 @@ ChromosomePlot.prototype.updateData = function() {
 ChromosomePlot.prototype.updateX = function() {
   var self = this;
   return function() {
-    console.log("updating X");
     var newxstart = d3.round(self.startclamp(self.x.domain()[0])),
         newxend = d3.round(self.endclamp(self.x.domain()[1]));
     
@@ -331,7 +322,6 @@ ChromosomePlot.prototype.updateX = function() {
 ChromosomePlot.prototype.updateY = function() {
   var self = this;
   return function () {
-    console.log("updating Y");
 
     var largestbin = d3.max(self.top.hist.concat(self.bot.hist), function(j) {return j.y});
     self.sliderscale.domain([5,d3.max([5,largestbin/0.9])]);
@@ -354,7 +344,6 @@ ChromosomePlot.prototype.redraw = function() {
   var self = this;
   return function() {
 
-    console.log("about to update all?");
     self.updateX()();
 
     self.updateData()();

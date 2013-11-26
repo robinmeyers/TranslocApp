@@ -147,6 +147,7 @@ GEM
       rspec-expectations (~> 2.13.0)
       rspec-mocks (~> 2.13.0)
     ruby-ole (1.2.11.7)
+    rubystats (0.2.3)
     rubyzip (0.9.9)
     sass (3.2.12)
     sass-rails (4.0.0)
@@ -217,6 +218,7 @@ DEPENDENCIES
   rails_config
   roo
   rspec-rails (= 2.13.1)
+  rubystats
   sass-rails (= 4.0.0)
   sdoc (= 0.3.20)
   selenium-webdriver (~> 2.35.1)
