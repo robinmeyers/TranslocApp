@@ -27,7 +27,7 @@ TranslocPlot = function(elemid,junctions,options) {
   this.bot = {};
 
   this.padding = {
-    "top": 80,
+    "top": 40,
     "right": 40,
     "bottom": 10,
     "left": 50
@@ -127,7 +127,13 @@ TranslocPlot = function(elemid,junctions,options) {
       .append("g")
         .attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")");
 
-
+  this.vis.append("clipPath")                  //Make a new clipPath
+    .attr("id", "chart-area")           //Assign an ID
+    .append("rect")                     //Within the clipPath, create a new rect
+    .attr("x", 0)                 //Set rect's position and size…
+    .attr("y", 0)
+    .attr("width", this.size.width)
+    .attr("height", this.size.height);
 
   this.top.plot = this.vis.append("rect")
       .attr("width", this.size.width)
@@ -158,6 +164,7 @@ TranslocPlot = function(elemid,junctions,options) {
   this.vis.append("path")
           .attr("id","toppath")
           .attr("class", "line")
+          .attr("clip-path", "url(#chart-area)")
           .attr("stroke", "steelblue")
           .attr("fill", "none")
           .attr("stroke-width", 2)          
@@ -165,6 +172,7 @@ TranslocPlot = function(elemid,junctions,options) {
   this.vis.append("path")
           .attr("id","botpath")
           .attr("class", "line")
+          .attr("clip-path", "url(#chart-area)")
           .attr("stroke", "firebrick")
           .attr("fill", "none")
           .attr("stroke-width", 2)
@@ -435,7 +443,7 @@ $(document).ready(function() {
     junctions = json;
     for (var i=0;i<junctions.length;i++) {
       var j = junctions[i];
-      $('table').append("<tr><td>chr"+j.rname+"</td><td>"+j.junction+"</td><td>"+j.strand+"</td></tr>");
+      $('table').append("<tr><td>"+j.rname+"</td><td>"+j.junction+"</td><td>"+j.strand+"</td></tr>");
     }
     plot = new TranslocPlot("transloc-viz", junctions, {
         "start": 0,
