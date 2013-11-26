@@ -1,6 +1,6 @@
 <tr>
-  <%= content_tag :td, library.name, class: "" %>
-  <%= content_tag :td, library.researcher.name , class: "" %>
+  <%= content_tag :td, (link_to library.name, library_path(library)), class: "" %>
+  <%= content_tag :td, (link_to library.researcher.name, researcher_path(library.researcher) ), class: "" %>
   <%= content_tag :td, content_tag(:span, library.mid, class: "mid") +
         content_tag(:span, library.primer, class: "primer"), class: "" %>
   <% if current_researcher.present? && current_researcher.admin? || current_researcher?(library.researcher) %>
