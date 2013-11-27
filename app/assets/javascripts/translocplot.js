@@ -205,6 +205,9 @@ ChromosomePlot = function(elemid,data,options) {
                       .nice()
                       .clamp(true);
 
+  this.sliderclamp = this.sliderscale.copy()
+                          .domain(this.sliderscale.range());
+
   this.brush = d3.svg.brush()
     .y(self.sliderscale)
     .extent([5,5])
@@ -264,13 +267,15 @@ ChromosomePlot = function(elemid,data,options) {
 ChromosomePlot.prototype.brushed = function() {
   var self = this;
   return function() {
-    var value = self.brush.extent()[0];
-    if (d3.event.sourceEvent) { // not a programmatic event
-      value = self.sliderscale.invert(d3.mouse(this)[1]);
-      self.brush.extent([value, value]);
-    }
+    // var value = self.brush.extent()[0];
+    // if (d3.event.sourceEvent) { // not a programmatic event
+    //   value = self.sliderscale.invert(d3.mouse(this)[1]);
+    //   self.brush.extent([value, value]);
+    // }
 
-    self.handle.attr("cy", self.sliderscale(value));
+    value = d3.mouse(this)[1];
+
+    self.handle.attr("cy", self.sliderclamp(value));
     self.redraw()();
   }
 }
