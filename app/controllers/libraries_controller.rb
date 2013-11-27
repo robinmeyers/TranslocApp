@@ -15,8 +15,6 @@ class LibrariesController < ApplicationController
     gon.library = @library
     @assembly = Assembly.find_by(name: @library.assembly)
     @chromosomes = @assembly.chromosomes
-    gon.chromosomes = @chromosomes
-    gon.cytobands = @assembly.cytobands
   end 
 
   def create
@@ -49,6 +47,27 @@ class LibrariesController < ApplicationController
     @library = Library.destroy(params[:id])
     flash[:success] = "Library #{@library.name} destroyed."
     redirect_back_or(sequencing_path(@library.sequencing))
+  end
+
+  def get_library_data
+
+    @library = Library.find(params[:library_id])
+    @assembly = Assembly.find_by(name: @library.assembly)
+    if params[:chr]
+      @junctions = @library.junctions.where(rname: params[:chr]).select("rname, junction, strand")
+      @chromosomes = @assembly.chromosomes.where(name: params[:chr])
+      @cytobands = @assembly.cytobands.where(chrom: params[:chr])
+    else
+      @junctions = @library.junctions
+      @chromosomes = @assembly.chromosomes
+      @cytobands = @assembly.cytobands
+    end
+
+    @data = {junctions: @junctions, chromosomes: @chromosomes, cytobands: @cytobands}
+    # respond_to do |format|
+      # format.json { 
+        render json: @data
+    # end
   end
 
   private

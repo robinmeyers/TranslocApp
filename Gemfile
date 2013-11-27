@@ -35,6 +35,7 @@ gem 'roo'
 gem 'd3-rails'
 gem 'gon'
 gem 'crossfilter-rails'
+gem 'rubystats'
 
 group :doc do
   gem 'sdoc', '0.3.20', require: false

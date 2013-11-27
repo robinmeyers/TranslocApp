@@ -33,16 +33,17 @@ class Library < ActiveRecord::Base
     { with: VALID_SEQUENCE_REGEX, message: "must be a string of only A, C, G, and T" }
 
   validates :assembly, presence: true, inclusion:
-                  { in: ["mm9","hg19"], message: "is not a valid assembly" }
+                  { in: ["mm9","hg19"], message: "must be one of 'mm9' or 'hg19'" }
 
-  validates :brkchr, presence: true, inclusion: 
-                  { in: (((1..22).to_a + ["X","Y"]).map { |a| a.to_s }).map{ |c| "chr"+c }  , message: " is not a valid chromosome name" }
   validates :brkstrand, presence: true, inclusion: { in: ["+", "-"],
-                                          message: "is not a valid strand" }
+                                          message: "must be either '+' or '-'" }
   validates :brkstart, presence: true, numericality: { only_integer: true, greater_than: 0,
-                                        message: "is not valid" }
+                                        message: "must be an integer greater than 0" }
   validates :brkend, presence: true, numericality: { only_integer: true, greater_than: 0,
-                                      message: "is not valid" }
+                                      message: "must be an integer greater than 0" }
+
+  validate  :brkchr_exists_in_assembly, :brkstart_exists_on_brkchr, :brkend_exists_on_brkchr
+
 
   def self.to_txt(options = {})
     CSV.generate(options) do |txt|
@@ -76,6 +77,26 @@ class Library < ActiveRecord::Base
     self.brkend = brkend.to_i
 
   end
+
+  def brkchr_exists_in_assembly
+    unless Assembly.find_by(name: assembly).chromosomes.map{|c| c.name}.include?(brkchr)
+      errors.add(:brkchr, "must exist in given assembly")
+    end
+  end
+
+  def brkstart_exists_on_brkchr
+
+    unless brkstart <= Assembly.find_by(name: assembly).chromosomes.find_by(name: brkchr).size
+      errors.add(:brkstart, "must exist on given chromosome")
+    end
+  end
+
+  def brkend_exists_on_brkchr
+    unless brkend <= Assembly.find_by(name: assembly).chromosomes.find_by(name: brkchr).size
+      errors.add(:brkend, "must exist on given chromosome")
+    end
+  end
+
 
 
 

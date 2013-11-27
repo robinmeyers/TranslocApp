@@ -1,6 +1,6 @@
 var plot;
 var hist;
-var junctions;
+var data;
 var tmpgraph;
 
 registerKeyboardHandler = function(callback) {
@@ -13,15 +13,18 @@ formatBasePairs = function(bp) {
   return prefix.scale(bp).toString() + prefix.symbol + (prefix.symbol == "" ? "bp" : "b");
 }
 
-TranslocPlot = function(elemid,junctions,options) {
+ChromosomePlot = function(elemid,data,options) {
   var self = this;
-  this.chart = document.getElementById(elemid);
-  this.cx = this.chart.clientWidth;
-  this.cy = this.chart.clientHeight;
+  this.chart = d3.select("#"+elemid);
+  this.cx = parseInt(this.chart.style("width"));
+  this.cy = parseInt(this.chart.style("height"));
   this.options = options || {};
   this.options.chrthickness = 10;
-  this.options.start = options.start || 0;
-  this.options.end = options.end || 10000000;
+  this.options.bins = options.bins || 100;
+
+  this.options.start = 0;
+  this.options.chr = d3.select("#chrfield").property("value");
+  this.options.end = data.chromosomes[0].size;
 
   this.top = {};
   this.bot = {};
@@ -46,66 +49,51 @@ TranslocPlot = function(elemid,junctions,options) {
       .nice();
 
   this.startclamp = d3.scale.linear()
-          .domain([0,10000000-100])
-          .range([0,10000000-100])
+          .domain([0,this.options.end-this.options.bins])
+          .range([0,this.options.end-this.options.bins])
           .clamp(true);
   this.endclamp = d3.scale.linear()
-          .domain([100,10000000])
-          .range([100,10000000])
+          .domain([this.options.bins,this.options.end])
+          .range([this.options.bins,this.options.end])
           .clamp(true);
 
-  var histbins = self.x.ticks(100);
+  var histbins = self.x.ticks(this.options.bins);
 
 
-  // drag x-axis logic
-  this.downx = Math.NaN;
-
-  this.cf = crossfilter(junctions);
+  this.cf = crossfilter(data.junctions);
   this.junctionsByChr = this.cf.dimension(function(j) { return j.rname; });
   this.junctionsByStrand = this.cf.dimension(function(j) { return j.strand; });
 
 
-
-
-  this.top.hist = d3.layout.histogram()
-    .bins(histbins)
-    .value(function(j) {return j.junction})
-    (this.junctionsByStrand.filter("+").top(Infinity));
-  hist = this.top.hist;
-  this.junctionsByStrand.filterAll();
-  this.bot.hist = d3.layout.histogram()
-    .bins(histbins)
-    .value(function(j) {return j.junction})
-    (this.junctionsByStrand.filter("-").top(Infinity));
-
+  // this.top.hist = d3.layout.histogram()
+  //   .bins(histbins)
+  //   .value(function(j) {return j.junction})
+  //   (this.junctionsByStrand.filter("+").top(Infinity));
+  // hist = this.top.hist;
+  // this.junctionsByStrand.filterAll();
+  // this.bot.hist = d3.layout.histogram()
+  //   .bins(histbins)
+  //   .value(function(j) {return j.junction})
+  //   (this.junctionsByStrand.filter("-").top(Infinity));
 
 
   
-  this.options.ymin = 0;
-  this.options.ymax = d3.max(this.top.hist.concat(this.bot.hist),function(b){return b.y;});
-  this.options.ymax = d3.max([this.options.ymax,5]) 
-  console.log(this.options.ymax);
-
-
 
 
   // top y-scale (inverted domain)
   this.top.y = d3.scale.linear()
-      .domain([this.options.ymax, this.options.ymin])
+      .domain([5, 0])
       .nice()
       .range([0, (this.size.height-this.options.chrthickness)/2])
       .nice();
 
   this.bot.y = d3.scale.linear()
-      .domain([this.options.ymin, this.options.ymax])
+      .domain([0, 5])
       .nice()
       .range([(this.size.height+this.options.chrthickness)/2, this.size.height])
       .nice();
 
-  // drag y-axis logic
-  this.downy = Math.NaN;
 
-  this.dragged = this.selected = null;
 
   this.top.line = d3.svg.line()
       .x(function(d) { return self.x(d.x); })
@@ -119,9 +107,7 @@ TranslocPlot = function(elemid,junctions,options) {
 
 
 
-  tmpgraph = this;
-
-  this.vis = d3.select(this.chart).append("svg")
+  this.vis = this.chart.append("svg")
       .attr("width",  this.cx)
       .attr("height", this.cy)
       .append("g")
@@ -167,22 +153,24 @@ TranslocPlot = function(elemid,junctions,options) {
           .attr("clip-path", "url(#chart-area)")
           .attr("stroke", "steelblue")
           .attr("fill", "none")
-          .attr("stroke-width", 2)          
-          .attr("d", this.top.line(this.top.hist));
+          .attr("stroke-width", 2);          
+          // .attr("d", this.top.line(this.top.hist));
+
   this.vis.append("path")
           .attr("id","botpath")
           .attr("class", "line")
           .attr("clip-path", "url(#chart-area)")
           .attr("stroke", "firebrick")
           .attr("fill", "none")
-          .attr("stroke-width", 2)
-          .attr("d", this.bot.line(this.bot.hist));
+          .attr("stroke-width", 2);
+          // .attr("d", this.bot.line(this.bot.hist));
 
   this.xAxis = d3.svg.axis()
                   .scale(this.x)
                   .orient("top")
                   .outerTickSize(0)
                   .ticks(8);
+
   this.top.yAxis = d3.svg.axis()
                       .scale(this.top.y)
                       .orient("left")
@@ -191,6 +179,8 @@ TranslocPlot = function(elemid,junctions,options) {
                       .scale(this.bot.y)
                       .orient("left")
                       .ticks(5);
+
+
   this.vis.append("g")
     .attr("class","axis x")
     .attr("transform", "translate(0,-5)")
@@ -208,16 +198,19 @@ TranslocPlot = function(elemid,junctions,options) {
     .attr("transform", "translate(-5,0)")
     .call(this.bot.yAxis);
 
-  this.sliderscale = d3.scale.linear()
-                      .domain([5,self.options.ymax])
+  this.sliderscale = d3.scale.log()
+                      .domain([5,5])
                       .nice()
-                      .range([self.top.y.range()[0]+20,self.top.y.range()[1]-20])
+                      .range([self.top.y.range()[0]+40,self.top.y.range()[1]-20])
                       .nice()
                       .clamp(true);
 
+  this.sliderclamp = this.sliderscale.copy()
+                          .domain(this.sliderscale.range());
+
   this.brush = d3.svg.brush()
     .y(self.sliderscale)
-    .extent([self.options.ymax,self.options.ymax])
+    .extent([5,5])
     .on("brush", self.brushed());
 
   this.vis.append("g")
@@ -227,7 +220,9 @@ TranslocPlot = function(elemid,junctions,options) {
       .scale(self.sliderscale)
       .orient("right")
       .ticks(0)
-      .outerTickSize(0));
+      .tickFormat("")
+      .outerTickSize(0)
+      .tickSize(0));
     // .select(".domain")
     //   .attr("class", "domain slider")
     // .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
@@ -251,7 +246,7 @@ TranslocPlot = function(elemid,junctions,options) {
 
   this.handle = this.slider.append("circle")
     .attr("class", "handle")
-    .attr("cy", self.sliderscale(self.options.ymax))
+    .attr("cy", self.sliderscale.range()[1])
     .attr("r", 6);
 
   
@@ -264,123 +259,36 @@ TranslocPlot = function(elemid,junctions,options) {
           .attr("text-anchor","end")
 
   
-  // d3.select(this.chart)
-  //     .on("mousemove.drag", self.mousemove())
-  //     .on("mouseup.drag",   self.mouseup())
-
-  this.redraw();
+  this.redraw()();
 
  
 };
 
-
-
-// TranslocPlot.prototype.plot_drag = function() {
-//   var self = this;
-//   return function() {
-//     registerKeyboardHandler(self.keydown());
-//     d3.select('body').style("cursor", "move");  
-//   }
-// };
-
-// TranslocPlot.prototype.update = function() {
-//   var self = this;
-  
-
-//   if (d3.event && d3.event.keyCode) {
-//     d3.event.preventDefault();
-//     d3.event.stopPropagation();
-//   }
-// }
-
-
-// TranslocPlot.prototype.mousemove = function() {
-//   var self = this;
-//   return function() {
-//     var p = d3.mouse(self.vis[0][0]);
-//         // t = d3.event.changedTouches;
-    
-//     if (self.dragged) {
-//       self.update();
-//     };
-//     if (!isNaN(self.downx)) {
-//       d3.select('body').style("cursor", "ew-resize");
-//       var rupx = self.x.invert(p[0]),
-//           xaxis1 = self.x.domain()[0],
-//           xaxis2 = self.x.domain()[1],
-//           xextent = xaxis2 - xaxis1;
-//       if (rupx != 0) {
-//         var changex, new_domain;
-//         changex = self.downx / rupx;
-//         new_domain = [xaxis1, xaxis1 + (xextent * changex)];
-//         self.x.domain(new_domain);
-//         self.redraw()();
-//       }
-//       d3.event.preventDefault();
-//       d3.event.stopPropagation();
-//     };
-//   }
-// };
-
-// TranslocPlot.prototype.mouseup = function() {
-//   var self = this;
-//   return function() {
-//     document.onselectstart = function() { return true; };
-//     d3.select('body').style("cursor", "auto");
-//     d3.select('body').style("cursor", "auto");
-//     if (!isNaN(self.downx)) {
-//       self.redraw()();
-//       self.downx = Math.NaN;
-//       d3.event.preventDefault();
-//       d3.event.stopPropagation();
-//     };
-//     if (self.dragged) { 
-//       self.dragged = null 
-//     }
-//   }
-// }
-
-// TranslocPlot.prototype.keydown = function() {
-//   var self = this;
-//   return function() {
-//     if (!self.selected) return;
-
-//   }
-// };
-
-TranslocPlot.prototype.brushed = function() {
+ChromosomePlot.prototype.brushed = function() {
   var self = this;
   return function() {
-    var value = self.brush.extent()[0];
-    if (d3.event.sourceEvent) { // not a programmatic event
-      value = self.sliderscale.invert(d3.mouse(this)[1]);
-      self.brush.extent([value, value]);
-    }
+    // var value = self.brush.extent()[0];
+    // if (d3.event.sourceEvent) { // not a programmatic event
+    //   value = self.sliderscale.invert(d3.mouse(this)[1]);
+    //   self.brush.extent([value, value]);
+    // }
 
-    self.handle.attr("cy", self.sliderscale(value));
-    self.redraw(value)();
+    value = d3.mouse(this)[1];
+
+    self.handle.attr("cy", self.sliderclamp(value));
+    self.redraw()();
   }
 }
 
-TranslocPlot.prototype.redraw = function(ymax) {
+
+ChromosomePlot.prototype.updateData = function() {
   var self = this;
   return function() {
 
-    var newxstart = d3.round(self.startclamp(self.x.domain()[0])),
-        newxend = d3.round(self.endclamp(self.x.domain()[1]));
-    
-    self.x.domain([ newxstart, newxend ]);
+    var histbins = self.x.ticks(self.options.bins);
 
-    d3.select("#startfield")
-      .property("value",self.x.domain()[0]);
-    d3.select("#endfield")
-      .property("value",self.x.domain()[1]);
-
-    self.vis.select("g.axis.x")
-      .call(self.xAxis)
-
-
-    var histbins = self.x.ticks(100);
+    self.vis.select("text#binsize")
+        .text(formatBasePairs(histbins[1]-histbins[0])+" bins");
 
     self.junctionsByStrand.filterAll();
     self.top.hist = d3.layout.histogram()
@@ -395,12 +303,37 @@ TranslocPlot.prototype.redraw = function(ymax) {
       .value(function(j) {return j.junction})
       .range([histbins[0],histbins[histbins.length-1]])
       (self.junctionsByStrand.filter("-").top(Infinity));
-    
-    self.options.ymax = d3.max(self.top.hist.concat(self.bot.hist),function(b){return b.y;});
-    self.options.ymax = d3.max([self.options.ymax,5])
+  }
+}
 
-    self.top.y.domain([ymax || self.options.ymax, self.options.ymin]);
-    self.bot.y.domain([self.options.ymin, ymax || self.options.ymax]);
+ChromosomePlot.prototype.updateX = function() {
+  var self = this;
+  return function() {
+    var newxstart = d3.round(self.startclamp(self.x.domain()[0])),
+        newxend = d3.round(self.endclamp(self.x.domain()[1]));
+    
+    self.x.domain([ newxstart, newxend ]);
+
+    d3.select("#startfield")
+      .property("value",self.x.domain()[0]);
+    d3.select("#endfield")
+      .property("value",self.x.domain()[1]);
+
+    self.vis.select("g.axis.x")
+      .call(self.xAxis)
+  }
+}
+
+ChromosomePlot.prototype.updateY = function() {
+  var self = this;
+  return function () {
+
+    var largestbin = d3.max(self.top.hist.concat(self.bot.hist), function(j) {return j.y});
+    self.sliderscale.domain([5,d3.max([5,largestbin/0.9])]);
+
+    var newymax = self.sliderscale.invert(self.handle.attr("cy"));
+    self.top.y.domain([newymax,0]);
+    self.bot.y.domain([0,newymax]);
 
     self.vis.select("g.axis.top.y")
       .call(self.top.yAxis);
@@ -408,8 +341,20 @@ TranslocPlot.prototype.redraw = function(ymax) {
     self.vis.select("g.axis.bot.y")
       .call(self.bot.yAxis);
 
-    self.vis.select("text#binsize")
-        .text(formatBasePairs(histbins[1]-histbins[0])+" bins");
+
+  }
+}
+
+ChromosomePlot.prototype.redraw = function() {
+  var self = this;
+  return function() {
+
+    self.updateX()();
+
+    self.updateData()();
+
+    self.updateY()();
+
 
     var toplines = self.vis.select("#toppath")
                       .attr("d", self.top.line(self.top.hist));
@@ -427,28 +372,36 @@ TranslocPlot.prototype.redraw = function(ymax) {
             .x(self.x)
             .on("zoom", self.redraw()));
 
-    self.sliderscale.domain([5,self.options.ymax]);
-
-    // self.handle.attr("cy", self.sliderscale(ymax || self.options.ymax));
 
 
   }  
 }
 
-
+function initViewer() {
+  var chr = d3.select("#chrfield").property("value");
+  var url = "/get_library_data/?library_id="+gon.library.id;
+  if (chr) {
+   url += "&chr="+chr;
+    d3.json(url, function(error, json) {
+      if (error) return console.warn(error);
+      data = json;
+      $('tbody').empty();
+      for (var i=0;i<data.junctions.length;i++) {
+        var j = data.junctions[i];
+        $('tbody').append("<tr><td>"+j.rname+"</td><td>"+j.junction+"</td><td>"+j.strand+"</td></tr>");
+      }
+      $('#transloc-viz').empty();
+      plot = new ChromosomePlot("transloc-viz", data, {});
+    });
+  } else {
+    d3.json(url, function(error, json) {
+      if (error) return console.warn(error);
+      data = json;
+    });
+  }
+}
 
 $(document).ready(function() {
-  d3.json("/get_junctions/?library_id="+gon.library.id, function(error, json) {
-    if (error) return console.warn(error);
-    junctions = json;
-    for (var i=0;i<junctions.length;i++) {
-      var j = junctions[i];
-      $('table').append("<tr><td>"+j.rname+"</td><td>"+j.junction+"</td><td>"+j.strand+"</td></tr>");
-    }
-    plot = new TranslocPlot("transloc-viz", junctions, {
-        "start": 0,
-        "end": 10000000
-    });
-  });
+  initViewer();
 });
 
