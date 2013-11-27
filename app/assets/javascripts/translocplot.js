@@ -147,6 +147,20 @@ ChromosomePlot = function(elemid,data,options) {
           .attr("fill", "none")
           .attr("stroke", "black");
 
+  this.cytobands = this.vis.append("g")
+                    .attr("class","cytoband");
+  this.cytobands.selectAll("rect")
+          .data(data.cytobands)
+          .enter()
+          .append("rect")
+          .attr("class",function(c) {return c.stain;})
+          .attr("clip-path","url(#chart-area)")
+          .attr("y", self.top.y(0))
+          .attr("height", self.options.chrthickness)
+          .attr("x", function(c) {return self.x(c.start);})
+          .attr("width", function(c) {return self.x(c.end)-self.x(c.start);});
+
+
   this.vis.append("path")
           .attr("id","toppath")
           .attr("class", "line")
@@ -280,6 +294,14 @@ ChromosomePlot.prototype.brushed = function() {
   }
 }
 
+ChromosomePlot.prototype.updateCytobands = function() {
+  var self = this;
+  return function() {
+    self.cytobands.selectAll("rect")
+             .attr("x",function(c) {return self.x(c.start);})
+             .attr("width", function(c) {return self.x(c.end)-self.x(c.start);});
+  }
+}
 
 ChromosomePlot.prototype.updateData = function() {
   var self = this;
@@ -350,6 +372,8 @@ ChromosomePlot.prototype.redraw = function() {
   return function() {
 
     self.updateX()();
+
+    self.updateCytobands()();
 
     self.updateData()();
 

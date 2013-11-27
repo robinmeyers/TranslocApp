@@ -91,8 +91,8 @@ namespace :db do
                                        breaksite: breaksite,
                                        cutter: cutter)
         junctions = []
-        gen = Rubystats::NormalDistribution.new(brkstart, 25000)
-        rand(10000).times do |n|
+        gen = Rubystats::NormalDistribution.new(brkstart, 2000000)
+        (rand(10000)+2000).times do |n|
           r = rand(2)
           if r > 0
             chr = brkchr
