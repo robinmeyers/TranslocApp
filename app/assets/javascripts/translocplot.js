@@ -22,9 +22,15 @@ ChromosomePlot = function(elemid,data,options) {
   this.options.chrthickness = 10;
   this.options.bins = options.bins || 100;
 
-  this.options.start = 0;
-  this.options.chr = d3.select("#chrfield").property("value");
-  this.options.end = data.chromosomes[0].size;
+  this.start = 0;
+  this.chr = d3.select("#chrfield").property("value");
+  this.end = data.chromosomes[0].size;
+
+  this.options.xmin = options.xmin || this.start;
+  this.options.xmax = options.xmax || this.end;
+  if (this.options.ymax) {this.lockY = 1;}
+  this.options.ymax = options.ymax || 5;
+
 
   this.top = {};
   this.bot = {};
@@ -43,18 +49,18 @@ ChromosomePlot = function(elemid,data,options) {
 
   // x-scale
   this.x = d3.scale.linear()
-      .domain([this.options.start, this.options.end])
+      .domain([this.options.xmin, this.options.xmax])
       .nice()
       .range([0, this.size.width])
       .nice();
 
   this.startclamp = d3.scale.linear()
-          .domain([0,this.options.end-this.options.bins])
-          .range([0,this.options.end-this.options.bins])
+          .domain([this.start,this.end-this.options.bins])
+          .range([this.start,this.end-this.options.bins])
           .clamp(true);
   this.endclamp = d3.scale.linear()
-          .domain([this.options.bins,this.options.end])
-          .range([this.options.bins,this.options.end])
+          .domain([this.options.bins,this.end])
+          .range([this.options.bins,this.end])
           .clamp(true);
 
   var histbins = self.x.ticks(this.options.bins);
@@ -82,13 +88,13 @@ ChromosomePlot = function(elemid,data,options) {
 
   // top y-scale (inverted domain)
   this.top.y = d3.scale.linear()
-      .domain([5, 0])
+      .domain([this.options.ymax, 0])
       .nice()
       .range([0, (this.size.height-this.options.chrthickness)/2])
       .nice();
 
   this.bot.y = d3.scale.linear()
-      .domain([0, 5])
+      .domain([0, this.options.ymax])
       .nice()
       .range([(this.size.height+this.options.chrthickness)/2, this.size.height])
       .nice();
@@ -213,7 +219,7 @@ ChromosomePlot = function(elemid,data,options) {
     .call(this.bot.yAxis);
 
   this.sliderscale = d3.scale.log()
-                      .domain([5,5])
+                      .domain([this.options.ymax,this.options.ymax])
                       .nice()
                       .range([self.top.y.range()[0]+40,self.top.y.range()[1]-20])
                       .nice()
@@ -224,7 +230,7 @@ ChromosomePlot = function(elemid,data,options) {
 
   this.brush = d3.svg.brush()
     .y(self.sliderscale)
-    .extent([5,5])
+    .extent([this.options.ymax,this.options.ymax])
     .on("brush", self.brushed());
 
   this.vis.append("g")
@@ -290,6 +296,7 @@ ChromosomePlot.prototype.brushed = function() {
     value = d3.mouse(this)[1];
 
     self.handle.attr("cy", self.sliderclamp(value));
+    self.lockY = false;
     self.redraw()();
   }
 }
@@ -363,6 +370,9 @@ ChromosomePlot.prototype.updateY = function() {
     self.vis.select("g.axis.bot.y")
       .call(self.bot.yAxis);
 
+    d3.select("#yscalefield")
+          .property("value",d3.round(newymax));
+
 
   }
 }
@@ -377,7 +387,7 @@ ChromosomePlot.prototype.redraw = function() {
 
     self.updateData()();
 
-    self.updateY()();
+    if (!self.lockY) {self.updateY()();}
 
 
     var toplines = self.vis.select("#toppath")
@@ -401,7 +411,7 @@ ChromosomePlot.prototype.redraw = function() {
   }  
 }
 
-function initViewer() {
+function initViewer(options) {
   var chr = d3.select("#chrfield").property("value");
   var url = "/get_library_data/?library_id="+gon.library.id;
   if (chr) {
@@ -415,7 +425,7 @@ function initViewer() {
         $('tbody').append("<tr><td>"+j.rname+"</td><td>"+j.junction+"</td><td>"+j.strand+"</td></tr>");
       }
       $('#transloc-viz').empty();
-      plot = new ChromosomePlot("transloc-viz", data, {});
+      plot = new ChromosomePlot("transloc-viz", data, options);
     });
   } else {
     d3.json(url, function(error, json) {
@@ -426,6 +436,6 @@ function initViewer() {
 }
 
 $(document).ready(function() {
-  initViewer();
+  initViewer({});
 });
 

@@ -11,6 +11,9 @@
     <%= number_field_tag :start, 0, id: "startfield", class: "span2" %>
     <span> - </span>
     <%= number_field_tag :end, 10000000, id: "endfield", class: "span2" %>
+    <span>Y-scale: </span>
+    <%= number_field_tag :ymax, 0, id: "yscalefield", class: "span2" %>
+    <%= submit_tag "Go!", class: "btn btn-primary", onclick: "" %>
   </form>
   <ul class="nav nav-tabs">
     <li><a href="#junction-table" data-toggle="tab">Table</a></li>
