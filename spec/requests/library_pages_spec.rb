@@ -10,8 +10,8 @@ describe "Library pages" do
 
   describe "library page" do
     let(:library) { FactoryGirl.create(:library, researcher: researcher, sequencing: sequencing) }
-    let!(:j1) { FactoryGirl.create(:junction, library: library, rname: "12") }
-    let!(:j2) { FactoryGirl.create(:junction, library: library, rname: "15") }
+    let!(:j1) { FactoryGirl.create(:junction, library: library, rname: "chr12") }
+    let!(:j2) { FactoryGirl.create(:junction, library: library, rname: "chr15") }
 
     before { visit library_path(library) }
 

@@ -42,7 +42,7 @@ class Library < ActiveRecord::Base
   validates :brkend, presence: true, numericality: { only_integer: true, greater_than: 0,
                                       message: "must be an integer greater than 0" }
 
-  validate  :brkchr_exists_in_assembly, :brkstart_exists_on_brkchr, :brkend_exists_on_brkchr
+  validate  :brksite_exists_in_assembly
 
 
   def self.to_txt(options = {})
@@ -78,26 +78,18 @@ class Library < ActiveRecord::Base
 
   end
 
-  def brkchr_exists_in_assembly
+  def brksite_exists_in_assembly
     unless Assembly.find_by(name: assembly).chromosomes.map{|c| c.name}.include?(brkchr)
       errors.add(:brkchr, "must exist in given assembly")
+    else
+      unless brkstart <= Assembly.find_by(name: assembly).chromosomes.find_by(name: brkchr).size
+        errors.add(:brkstart, "must exist on given chromosome")
+      end
+      unless brkend <= Assembly.find_by(name: assembly).chromosomes.find_by(name: brkchr).size
+        errors.add(:brkend, "must exist on given chromosome")
+      end
     end
   end
-
-  def brkstart_exists_on_brkchr
-
-    unless brkstart <= Assembly.find_by(name: assembly).chromosomes.find_by(name: brkchr).size
-      errors.add(:brkstart, "must exist on given chromosome")
-    end
-  end
-
-  def brkend_exists_on_brkchr
-    unless brkend <= Assembly.find_by(name: assembly).chromosomes.find_by(name: brkchr).size
-      errors.add(:brkend, "must exist on given chromosome")
-    end
-  end
-
-
 
 
 end
