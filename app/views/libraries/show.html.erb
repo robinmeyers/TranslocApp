@@ -5,16 +5,16 @@
   <h3 class="center">Junctions (<%= @junctions_count %>)</h3>
 </div>
 <div class="container">
-  <form class="form-inline" id="control-bar">
+  <row>
     <span>Region: </span>
-    <%= select :chr, "Chromosome", options_for_select(@chromosomes.map{ |chr| chr.name } ,@library.brkchr), {include_blank: true}, onchange: "initViewer()", class: "input-small", id: "chrfield"%>
+    <%= select :chr, "Chromosome", options_for_select(@chromosomes.map{ |chr| chr.name } ,@library.brkchr), {include_blank: true}, onchange: "initViewer({})", class: "input-small", id: "chrfield"%>
     <%= number_field_tag :start, 0, id: "startfield", class: "span2" %>
     <span> - </span>
     <%= number_field_tag :end, 10000000, id: "endfield", class: "span2" %>
     <span>Y-scale: </span>
     <%= number_field_tag :ymax, 0, id: "yscalefield", class: "span2" %>
-    <%= submit_tag "Go!", class: "btn btn-primary", onclick: "" %>
-  </form>
+    <%= submit_tag "Go!", class: "btn btn-primary", onclick: 'initViewer({xmin: d3.select("#startfield").property("value"), xmax: d3.select("#endfield").property("value"), ymax: d3.select("#yscalefield").property("value")})' %>
+  </row>
   <ul class="nav nav-tabs">
     <li><a href="#junction-table" data-toggle="tab">Table</a></li>
     <li><a href="#junction-sequences" data-toggle="tab">Sequences</a></li>

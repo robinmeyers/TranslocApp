@@ -50,9 +50,9 @@ ChromosomePlot = function(elemid,data,options) {
   // x-scale
   this.x = d3.scale.linear()
       .domain([this.options.xmin, this.options.xmax])
-      .nice()
-      .range([0, this.size.width])
-      .nice();
+      // .nice()
+      .range([0, this.size.width]);
+      // .nice();
 
   this.startclamp = d3.scale.linear()
           .domain([this.start,this.end-this.options.bins])
@@ -412,6 +412,7 @@ ChromosomePlot.prototype.redraw = function() {
 }
 
 function initViewer(options) {
+  console.log(options);
   var chr = d3.select("#chrfield").property("value");
   var url = "/get_library_data/?library_id="+gon.library.id;
   if (chr) {
