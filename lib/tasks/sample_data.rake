@@ -6,31 +6,7 @@ namespace :db do
     require 'rubystats'
 
 
-    ["mm9","hg19"].each do |genome|
 
-      assembly = Assembly.create!(name: genome)
-
-      chr_opts = {headers: [:name, :size], col_sep: "\t"}
-      chr_file = Rails.root.join('data', 'assembly', genome, 'ChromInfo.txt')
-
-      CSV.foreach(chr_file, chr_opts) do |row|
-        assembly.chromosomes.create!(name: row[:name], size: row[:size])
-      end
-
-
-      cyto_file = Rails.root.join('data', 'assembly', genome, 'cytoBand.txt')
-      cyto_opts = {headers: [:chrom, :start, :end, :name, :stain], col_sep: "\t"}
-
-      CSV.foreach(cyto_file, cyto_opts) do |row|
-        assembly.cytobands.create!( name: row[:name],
-                                    chrom: row[:chrom],
-                                    start: row[:start],
-                                    end: row[:end],
-                                    stain: row[:stain] )
-      end
-
-
-    end
 
     Researcher.create!(name: "Robin Meyers",
                  email: "robin.m.meyers@gmail.com",
@@ -68,38 +44,36 @@ namespace :db do
         description = Faker::Lorem.sentence(5)
         assembly = ["mm9","hg19"].sample
         chromosomes = Assembly.find_by(name: assembly).chromosomes
-        brkchr = chromosomes.sample
-        brkstart = rand(brkchr.size)+1
-        brkend = brkstart + rand(500)
-        brkstrand = ["+","-"].sample
+        chr = chromosomes.sample
+        bstart = rand(chr.size)+1
+        bend = bstart + rand(500)
+        strand = ["+","-"].sample
         mid = ["A","C","G","T"].values_at(*Array.new(rand(10)){rand(4)}).join
         primer = ["A","C","G","T"].values_at(*Array.new(rand(10)+15){rand(4)}).join
         adapter = ["A","C","G","T"].values_at(*Array.new(rand(10)+15){rand(4)}).join
-        breaksite = ["A","C","G","T"].values_at(*Array.new(rand(300)+200){rand(4)}).join
         cutter = ["AGCT","GGAA",""].sample
         library = researcher.libraries.create!(sequencing: sequencing,
                                        name: name,
                                        description: description,
                                        assembly: assembly,
-                                       brkchr: brkchr.name,
-                                       brkstart: brkstart,
-                                       brkend: brkend,
-                                       brkstrand: brkstrand,
+                                       chr: chr.name,
+                                       bstart: bstart,
+                                       bend: bend,
+                                       strand: strand,
                                        mid: mid,
                                        primer: primer,
                                        adapter: adapter,
-                                       breaksite: breaksite,
                                        cutter: cutter)
         junctions = []
-        gen = Rubystats::NormalDistribution.new(brkstart, 2000000)
-        (rand(10000)+2000).times do |n|
+        gen = Rubystats::NormalDistribution.new(bstart, 2000000)
+        (rand(2000)+2000).times do |n|
           r = rand(2)
           if r > 0
-            chr = brkchr
+            chr = chr
             junction = gen.rng
             junction = rand(chr.size)+1 if (junction < 1 || junction > chr.size)
             s = rand(4)
-            strand = s > 0 ? brkstrand : ["+","-"].sample
+            strand = s > 0 ? strand : ["+","-"].sample
           else
             chr = chromosomes.sample
             junction = rand(chr.size)+1

@@ -47,13 +47,12 @@ describe "Library pages" do
         fill_in 'library_mid', with: "ACGT"
         fill_in 'library_cutter', with: "TTAA"
         fill_in 'library_primer', with: "ACGTACGTACGT"
-        fill_in 'library_breaksite', with: "ACGTACGTACGTACGTACGT"
         fill_in 'library_adapter', with: "ACGTACGT"
         select 'mm9', from: 'library_assembly'
-        fill_in 'library_brkchr', with: "15"
-        fill_in 'library_brkstart', with: 1000000
-        fill_in 'library_brkend', with: 1000001
-        select '+', from: 'library_brkstrand'
+        fill_in 'library_chr', with: "15"
+        fill_in 'library_bstart', with: 1000000
+        fill_in 'library_bend', with: 1000001
+        select '+', from: 'library_strand'
 
       end
 

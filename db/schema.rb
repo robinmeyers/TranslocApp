@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140205200616) do
+ActiveRecord::Schema.define(version: 20140313015854) do
 
   create_table "assemblies", force: true do |t|
     t.string   "name"
@@ -75,8 +75,8 @@ ActiveRecord::Schema.define(version: 20140205200616) do
     t.text     "breakseq"
     t.string   "adapter"
     t.string   "chr"
-    t.integer  "start"
-    t.integer  "end"
+    t.integer  "bstart"
+    t.integer  "bend"
     t.text     "description"
     t.string   "cutter"
     t.string   "strand"

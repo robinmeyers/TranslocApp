@@ -26,8 +26,6 @@ class Library < ActiveRecord::Base
     { with: VALID_SEQUENCE_REGEX, message: "must be a string of only A, C, G, and T" }
   validates :adapter, presence: true, format:
       { with: VALID_SEQUENCE_REGEX, message: "must be a string of only A, C, G, and T" }
-  validates :breaksite, presence: true, format:
-    { with: VALID_SEQUENCE_REGEX, message: "must be a string of only A, C, G, and T" }
 
   validates :cutter, format:
     { with: VALID_SEQUENCE_REGEX, message: "must be a string of only A, C, G, and T" }
@@ -35,11 +33,11 @@ class Library < ActiveRecord::Base
   validates :assembly, presence: true, inclusion:
                   { in: ["mm9","hg19"], message: "must be one of 'mm9' or 'hg19'" }
 
-  validates :brkstrand, presence: true, inclusion: { in: ["+", "-"],
+  validates :strand, presence: true, inclusion: { in: ["+", "-"],
                                           message: "must be either '+' or '-'" }
-  validates :brkstart, presence: true, numericality: { only_integer: true, greater_than: 0,
+  validates :bstart, presence: true, numericality: { only_integer: true, greater_than: 0,
                                         message: "must be an integer greater than 0" }
-  validates :brkend, presence: true, numericality: { only_integer: true, greater_than: 0,
+  validates :bend, presence: true, numericality: { only_integer: true, greater_than: 0,
                                       message: "must be an integer greater than 0" }
 
   validate  :brksite_exists_in_assembly
@@ -47,9 +45,9 @@ class Library < ActiveRecord::Base
 
   def self.to_txt(options = {})
     CSV.generate(options) do |txt|
-      txt << %w[Id Library Sequencing Researcher Assembly]
-      all.each do |library|
-        txt << [library.id, library.name, library.sequencing.run, library.researcher.name, library.assembly]
+      txt << %w[Library Sequencing Researcher Assembly Chr Start End Strand Breakseq Breaksite MID Primer Adapter Cutter Description]
+      all.each do |exp|
+        txt << [exp.name, exp.sequencing.run, exp.researcher.name, exp.assembly, exp.chr, exp.bstart, exp.bend, exp.strand, exp.breakseq, exp.breaksite, exp.mid, exp.primer, exp.adapter, exp.cutter, exp.description]
       end
     end
   end
@@ -59,34 +57,34 @@ class Library < ActiveRecord::Base
     mid.to_s.upcase!
     primer.to_s.upcase!
     adapter.to_s.upcase!
-    breaksite.to_s.upcase!
+    breakseq.to_s.upcase!
     cutter.to_s.upcase!
-    if brkchr.is_a?(Numeric)
-      self.brkchr = brkchr.to_i.to_s
-    elsif brkchr.is_a?(String)      
-      self.brkchr = "chr"+brkchr unless brkchr[/chr(\w+)/i]
+    if chr.is_a?(Numeric)
+      self.chr = chr.to_i.to_s
+    elsif chr.is_a?(String)      
+      self.chr = "chr"+chr unless chr[/chr(\w+)/i]
     end
-    if brkstrand.is_a?(Numeric)
-      self.brkstrand = "+" if brkstrand == 1
-      self.brkstrand = "-" if brkstrand == -1
-    elsif brkstrand.is_a?(String)
-      self.brkstrand = "+" if brkstrand == "1"
-      self.brkstrand = "-" if brkstrand == "-1"
+    if strand.is_a?(Numeric)
+      self.strand = "+" if strand == 1
+      self.strand = "-" if strand == -1
+    elsif strand.is_a?(String)
+      self.strand = "+" if strand == "1"
+      self.strand = "-" if strand == "-1"
     end
-    self.brkstart = brkstart.to_i
-    self.brkend = brkend.to_i
+    self.bstart = bstart.to_i
+    self.bend = bend.to_i
 
   end
 
   def brksite_exists_in_assembly
-    unless Assembly.find_by(name: assembly).chromosomes.map{|c| c.name}.include?(brkchr)
-      errors.add(:brkchr, "must exist in given assembly")
+    unless Assembly.find_by(name: assembly).chromosomes.map{|c| c.name}.include?(chr)
+      errors.add(:chr, "must exist in given assembly")
     else
-      unless brkstart <= Assembly.find_by(name: assembly).chromosomes.find_by(name: brkchr).size
-        errors.add(:brkstart, "must exist on given chromosome")
+      unless bstart <= Assembly.find_by(name: assembly).chromosomes.find_by(name: chr).size
+        errors.add(:bstart, "must exist on given chromosome")
       end
-      unless brkend <= Assembly.find_by(name: assembly).chromosomes.find_by(name: brkchr).size
-        errors.add(:brkend, "must exist on given chromosome")
+      unless bend <= Assembly.find_by(name: assembly).chromosomes.find_by(name: chr).size
+        errors.add(:bend, "must exist on given chromosome")
       end
     end
   end

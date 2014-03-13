@@ -4,7 +4,7 @@
   <%= content_tag :td, number_with_delimiter(library.junction_count), class: "" %>
   <%= content_tag :td, library.description , class: "" %>
   <%= content_tag :td, library.assembly, class: "" %>
-  <%= content_tag :td, "#{library.brkchr}:#{number_with_delimiter(library.brkstart)}-#{number_with_delimiter(library.brkend)}:#{library.brkstrand}" %>
+  <%= content_tag :td, "#{library.chr}:#{number_with_delimiter(library.bstart)}-#{number_with_delimiter(library.bend)}:#{library.strand}" %>
   <%= content_tag :td, library.cutter, class: "" %>
   <% if current_researcher.admin? || current_researcher?(library.researcher) %>
     <%= content_tag :td, (link_to "edit", edit_library_path(library, return_to: request.path)) + " | " +

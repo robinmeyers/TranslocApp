@@ -32,6 +32,9 @@ class LibraryImport
   def load_imported_libraries
     spreadsheet = open_spreadsheet
     header = spreadsheet.row(1).map(&:downcase).map(&:to_sym)
+    header[header.index(:library)] = :name
+    header[header.index(:start)] = :bstart
+    header[header.index(:end)] = :bend
     (2..spreadsheet.last_row).map do |i|
       importparams = ActionController::Parameters.new({
               library: Hash[[header, spreadsheet.row(i)].transpose]
@@ -59,8 +62,8 @@ class LibraryImport
 
     def library_import_params(importparams) 
       importparams.require(:library).permit(:name, 
-        :assembly, :brkchr, :brkstart, :brkend, :brkstrand, :mid, :primer,
-        :adapter, :breaksite, :cutter, :description)
+        :assembly, :chr, :bstart, :bend, :strand, :mid, :primer,
+        :adapter, :breakseq, :breaksite, :cutter, :description)
     end
 
 

@@ -74,8 +74,8 @@ class LibrariesController < ApplicationController
 
     def library_params
       params.require(:library).permit(:name, 
-        :assembly, :brkchr, :brkstart, :brkend, :brkstrand, :mid, :primer,
-        :adapter, :breaksite, :cutter, :description)
+        :assembly, :chr, :bstart, :bend, :strand, :mid, :primer,
+        :adapter, :breakseq, :breaksite, :cutter, :description)
     end
 
     def correct_researcher_or_admin

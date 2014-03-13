@@ -25,14 +25,13 @@ FactoryGirl.define do
     assembly "mm9"
     mid ""
     primer "ACGTACGTACGT"
-    breaksite "ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGT"
     adapter "ACGTACGT"
-    brkchr "15"
-    brkstart 1000000
-    brkend 10000001
+    chr "15"
+    bstart 1000000
+    bend 10000001
     description "Test library"
     cutter "TTAA"
-    brkstrand "-"
+    strand "-"
   end
 
   factory :junction do
