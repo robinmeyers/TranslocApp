@@ -7,7 +7,7 @@
 <div class="container">
   <row>
     <span>Region: </span>
-    <%= select :chr, "Chromosome", options_for_select(@chromosomes.map{ |chr| chr.name } ,@library.brkchr), {include_blank: true}, onchange: "initViewer({})", class: "input-small", id: "chrfield"%>
+    <%= select :chr, "Chromosome", options_for_select(@chromosomes.map{ |chr| chr.name } ,@library.chr), {include_blank: true}, onchange: "initViewer({})", class: "input-small", id: "chrfield"%>
     <%= number_field_tag :start, 0, id: "startfield", class: "span2" %>
     <span> - </span>
     <%= number_field_tag :end, 10000000, id: "endfield", class: "span2" %>

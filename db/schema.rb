@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131112231642) do
+ActiveRecord::Schema.define(version: 20140313015854) do
 
   create_table "assemblies", force: true do |t|
     t.string   "name"
@@ -46,11 +46,19 @@ ActiveRecord::Schema.define(version: 20131112231642) do
     t.integer  "rstart"
     t.integer  "rend"
     t.string   "strand"
-    t.text     "sequence"
+    t.text     "seq"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "junction"
     t.integer  "library_id"
+    t.integer  "b_qstart"
+    t.integer  "b_qend"
+    t.string   "b_rname"
+    t.integer  "b_rstart"
+    t.integer  "b_rend"
+    t.string   "b_strand"
+    t.integer  "qlen"
+    t.string   "j_seq"
   end
 
   add_index "junctions", ["library_id", "rname", "junction"], name: "index_junctions_on_library_id_and_rname_and_junction"
@@ -64,14 +72,15 @@ ActiveRecord::Schema.define(version: 20131112231642) do
     t.string   "assembly"
     t.string   "mid"
     t.string   "primer"
-    t.text     "breaksite"
+    t.text     "breakseq"
     t.string   "adapter"
-    t.string   "brkchr"
-    t.integer  "brkstart"
-    t.integer  "brkend"
+    t.string   "chr"
+    t.integer  "bstart"
+    t.integer  "bend"
     t.text     "description"
     t.string   "cutter"
-    t.string   "brkstrand"
+    t.string   "strand"
+    t.integer  "breaksite"
   end
 
   add_index "libraries", ["researcher_id", "sequencing_id"], name: "index_libraries_on_researcher_id_and_sequencing_id"

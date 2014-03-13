@@ -18,8 +18,8 @@
   <%= f.text_field :primer %>
   <%= f.label :adapter %>
   <%= f.text_field :adapter %>
-  <%= f.label :breaksite %>
-  <%= f.text_area :breaksite, rows: "4" %>
+  <%= f.label :breakseq %>
+  <%= f.text_area :breakseq, rows: "4" %>
 </div>
 <div class="span5">
   <%= f.label :description %>
@@ -29,17 +29,17 @@
   <h4 class="center"> Breaksite </h4>
   <div class="row">
     <div class="span3">
-      <%= f.label :brkchr, "Chromosome" %>
-      <%= f.text_field :brkchr %>
+      <%= f.label :chr, "Chromosome" %>
+      <%= f.text_field :chr %>
     </div>
     <div class="span2">
-      <%= f.label :brkstrand, "Strand" %>
-      <%= f.select :brkstrand, options_for_select(["+","-"]) %>
+      <%= f.label :strand, "Strand" %>
+      <%= f.select :strand, options_for_select(["+","-"]) %>
     </div>
   </div>
-  <%= f.label :brkstart, "Start" %>
-  <%= f.text_field :brkstart %>  
-  <%= f.label :brkend, "End" %>
-  <%= f.text_field :brkend %>
+  <%= f.label :bstart, "Start" %>
+  <%= f.text_field :bstart %>  
+  <%= f.label :bend, "End" %>
+  <%= f.text_field :bend %>
 </div>
 </div>

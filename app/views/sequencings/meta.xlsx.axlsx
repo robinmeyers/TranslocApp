@@ -1,10 +1,10 @@
 wb = xlsx_package.workbook
 wb.add_worksheet do |sheet|
-  header = %w[Name Sequencing Researcher Description Assembly Brkchr Brkstart Brkend Brkstrand MID Primer Adapter Breaksite Cutter]
+  header = %w[Library Sequencing Researcher Assembly Chr Start End Strand Breakseq Breaksite MID Primer Adapter Cutter Description]
   sheet.add_row header
 
   @sequencing.libraries.each do |exp|
-    sheet.add_row [exp.name, exp.sequencing.run, exp.researcher.name, exp.description, exp.assembly, exp.brkchr, exp.brkstart, exp.brkend, exp.brkstrand, exp.mid, exp.primer, exp.adapter, exp.breaksite, exp.cutter]
+    sheet.add_row [exp.name, exp.sequencing.run, exp.researcher.name, exp.assembly, exp.chr, exp.bstart, exp.bend, exp.strand, exp.breakseq, exp.breaksite, exp.mid, exp.primer, exp.adapter, exp.cutter, exp.description]
   end
 
   description_style = wb.styles.add_style( alignment: { wrapText: true } )
@@ -16,11 +16,11 @@ wb.add_worksheet do |sheet|
 
 
   widths = Array.new(header.length)
-  widths[header.index("Breaksite")] = 20
+  widths[header.index("Breakseq")] = 20
   widths[header.index("Description")] = 20
   sheet.column_widths *widths
 
-  sheet.col_style( header.index("Name"), name_style, row_offset: 1 )
+  sheet.col_style( header.index("Library"), name_style, row_offset: 1 )
   sheet.col_style( header.index("Assembly"), assembly_style, row_offset: 1 )
   sheet.col_style( header.index("MID"), mid_style, row_offset: 1 )
   sheet.col_style( header.index("Primer"), primer_style, row_offset: 1 )
