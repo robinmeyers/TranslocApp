@@ -1,8 +1,19 @@
 <%= render 'shared/error_messages', object: f.object %>
 <div class="container">
 <div class="span5 offset1">
-  <%= f.label :name %>
-  <%= f.text_field :name, placeholder: "Name your library..." %>
+  <h4 class="center">Library Details</h4>
+  <div class="row">
+    <div class="span3">
+      <%= f.label :name %>
+      <%= f.text_field :name, placeholder: "Name your library..." %>
+    </div>
+    <div class="span2">
+      <%= f.label :assembly %>
+      <%= f.select :assembly, options_for_select(%w[mm9 hg19]) %>
+    </div>
+  </div>
+  <%= f.label :description %>
+  <%= f.text_area :description, rows: "2", placeholder: "Provide a brief description..." %>
   <h4 class="center">Sequence Information</h4>
   <div class="row">
     <div class="span3">
@@ -18,28 +29,38 @@
   <%= f.text_field :primer %>
   <%= f.label :adapter %>
   <%= f.text_field :adapter %>
-  <%= f.label :breakseq %>
-  <%= f.text_area :breakseq, rows: "4" %>
 </div>
 <div class="span5">
-  <%= f.label :description %>
-  <%= f.text_area :description, rows: "2", placeholder: "Provide a brief description..." %>
-  <%= f.label :assembly %>
-  <%= f.select :assembly, options_for_select(%w[mm9 hg19]) %>
   <h4 class="center"> Breaksite </h4>
-  <div class="row">
-    <div class="span3">
+  <div class="row-fluid">
+    <div class="span6">
       <%= f.label :chr, "Chromosome" %>
       <%= f.text_field :chr %>
     </div>
-    <div class="span2">
+    <div class="span3 offset3">
       <%= f.label :strand, "Strand" %>
       <%= f.select :strand, options_for_select(["+","-"]) %>
     </div>
   </div>
-  <%= f.label :bstart, "Start" %>
-  <%= f.text_field :bstart %>  
-  <%= f.label :bend, "End" %>
-  <%= f.text_field :bend %>
+  <div class="row-fluid">
+    <div class="span6">
+      <%= f.label :bstart, "Start" %>
+      <%= f.text_field :bstart %>
+    </div>
+    <div class="span6">
+      <%= f.label :bend, "End" %>
+      <%= f.text_field :bend %>
+    </div>
+  </div>
+
+  <h4 class="center"> Non-Endogenous Strategy </h4>
+  <%= f.label :breakseq %>
+  <%= f.text_area :breakseq, rows: "5" %>
+  <div class="row">
+    <div class="span2">
+      <%= f.label :breaksite, "Breaksite" %>
+      <%= f.text_field :breaksite %>
+    </div>
+  </div>
 </div>
 </div>
