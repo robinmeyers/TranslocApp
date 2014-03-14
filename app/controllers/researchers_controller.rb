@@ -32,7 +32,7 @@ class ResearchersController < ApplicationController
 
   def show
     @researcher = Researcher.find(params[:id])
-    @libraries = @researcher.libraries.order("id ASC").paginate(page: params[:page])
+    @libraries = @researcher.libraries.order("created_at DESC").paginate(page: params[:page])
     @libraries.each do |lib|
       lib.junction_count = lib.junctions.count
     end
